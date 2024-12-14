@@ -3,7 +3,7 @@
 lombok = "1.18.34"
 gson = "2.11.0"
 doma = "2.60.1"
-slf4j = "1.7.36"
+slf4j = "2.0.16"
 jetbrains-annotation = "26.0.1"
 
 #Test Modules
