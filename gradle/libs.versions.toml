@@ -2,7 +2,7 @@
 #App deps
 lombok = "1.18.36"
 gson = "2.11.0"
-doma = "2.60.1"
+doma = "3.1.0"
 slf4j = "2.0.16"
 jetbrains-annotation = "26.0.1"
 
