@@ -1,10 +1,10 @@
 [versions]
 #App deps
 lombok = "1.18.34"
-gson = "2.10.1"
+gson = "2.11.0"
 doma = "2.60.1"
 slf4j = "2.0.16"
-jetbrains-annotation = "25.0.0"
+jetbrains-annotation = "26.0.1"
 
 #Test Modules
 junit-jupiter = "5.11.0-M2"
