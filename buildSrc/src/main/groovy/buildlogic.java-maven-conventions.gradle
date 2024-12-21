@@ -1,4 +1,5 @@
 plugins {
+    id 'buildlogic.java-common-conventions'
     id 'maven-publish'
     id 'java-library'
 }
@@ -13,8 +14,6 @@ java {
     //withJavadocJar()
 }
 
-jar.enabled = true
-
 Properties props = new Properties()
 try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath(), "application.properties"))) {
     props.load(fis)
@@ -23,11 +22,22 @@ try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath()
 publishing {
     repositories {
         maven {
-            name = "gpr"
-            url = uri("https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY"))
+            name = "GitHub"
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = System.getenv("GITHUB_REPOSITORY_OWNER")
                 password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            name = "GitLab"
+            url = uri("https://gitlab.com/api/v4/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
+            credentials(HttpHeaderCredentials) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
             }
         }
     }

@@ -70,8 +70,8 @@ public class FileUtils {
 
     /**
      * @param path In source Jar
-     * @return
-     * @throws IOException
+     * @return Bytes of the resources
+     * @throws IOException throw from {@link java.io.InputStream#read(byte[])} ()}
      */
     @Nullable
     public static byte[] getResourcesInJar(final ClassLoader classLoader, final String path) throws IOException {

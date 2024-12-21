@@ -1,0 +1,18 @@
+image: amazoncorretto:8-alpine-jdk
+
+stages:
+  - build
+  - test
+  - publish
+
+gradle-build:
+  stage: build
+  script: ./gradlew build
+
+gradle-test:
+  stage: test
+  script: ./gradlew test
+
+gradle-publish:
+  stage: publish
+  script: ./gradlew publishMavenPublicationToGitLabRepository
