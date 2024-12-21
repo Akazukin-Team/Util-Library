@@ -26,21 +26,23 @@ dependencies {
     testRuntimeOnly libs.junit.platform
 }
 
-String encoding = StandardCharsets.UTF_8.displayName()
-
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = encoding
+    configure(options) {
+        encoding = StandardCharsets.UTF_8.displayName()
 
-    it.options.compilerArgs << '-Xlint'
-    it.options.compilerArgs << '-Xmaxerrs' << '10000'
-    it.options.compilerArgs << '-Xmaxwarns' << '10000'
-    it.options.compilerArgs << '-Xdiags:verbose'
+        compilerArgs << '-Xlint'
+        compilerArgs << '-Xmaxerrs' << '10000'
+        compilerArgs << '-Xmaxwarns' << '10000'
+        compilerArgs << '-Xdiags:verbose'
+    }
 
     it.sourceCompatibility = it.targetCompatibility = javaVersion
 }
 
 tasks.withType(Javadoc).configureEach {
-    it.options.encoding = (it.options as StandardJavadocDocletOptions).docEncoding = (it.options as StandardJavadocDocletOptions).charSet = encoding
+    configure(options) {
+        encoding = docEncoding = charSet = StandardCharsets.UTF_8.displayName()
+    }
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
