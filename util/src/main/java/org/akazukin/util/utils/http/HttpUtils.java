@@ -1,5 +1,11 @@
 package org.akazukin.util.utils.http;
 
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
+import org.akazukin.util.utils.IOUtils;
+import org.jetbrains.annotations.Nullable;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,26 +13,49 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 import java.util.Properties;
-import javax.net.ssl.HttpsURLConnection;
-import lombok.experimental.UtilityClass;
-import org.akazukin.util.utils.IOUtils;
 
 @UtilityClass
 public class HttpUtils {
-    public static byte[] request(final String url, final Properties header, final HttpMethod method) throws IOException, URISyntaxException {
-        return HttpUtils.request(url, header, null, method);
+    private final static HttpConfig DEFAULT_CONFIG = new HttpConfig();
+
+    private final static int CONNECTION_TIMEOUT = 2500;
+    private final static int READ_TIMEOUT = 5000;
+
+    static {
+        DEFAULT_CONFIG.setConnectTimeout(CONNECTION_TIMEOUT);
+        DEFAULT_CONFIG.setReadTimeout(READ_TIMEOUT);
+        DEFAULT_CONFIG.setDoInput(true);
+        DEFAULT_CONFIG.setDoOutput(true);
+        DEFAULT_CONFIG.setDoUseCaches(false);
     }
 
-    public static byte[] request(final String url, final Properties header, final String body,
-                                 final HttpMethod method) throws IOException, URISyntaxException {
+
+    public HttpResponse request(@NonNull final String url,
+                                @Nullable final Properties header, @Nullable final String body,
+                                @NonNull final HttpMethod method)
+            throws IOException, URISyntaxException {
+        return request(url, header, body, method, DEFAULT_CONFIG);
+    }
+
+    public HttpResponse request(@NonNull final String url,
+                                @Nullable final Properties header, @Nullable final String body,
+                                @NonNull final HttpMethod method,
+                                @NonNull final HttpConfig config)
+            throws IOException, URISyntaxException {
         HttpURLConnection con = null;
         try {
-            if (url.startsWith("http://")) {
-                con = (HttpURLConnection) new URI(url).toURL().openConnection();
+            final URL url_ = new URI(url).toURL();
+            final URLConnection con_ = url_.openConnection();
+            if (con_ instanceof HttpsURLConnection) {
+                con = (HttpsURLConnection) con_;
+            } else if (con_ instanceof HttpURLConnection) {
+                con = (HttpURLConnection) con_;
             } else {
-                con = (HttpsURLConnection) new URI(url).toURL().openConnection();
+                throw new URISyntaxException(url, "Unsupported protocol");
             }
 
             if (header != null && !header.isEmpty()) {
@@ -36,7 +65,7 @@ public class HttpUtils {
             }
 
             con.setRequestMethod(method.getMethod());
-            con.setConnectTimeout(2500);
+            con.setConnectTimeout(config.getConnectTimeout());
             con.setReadTimeout(5000);
             con.setInstanceFollowRedirects(false);
             con.setDoOutput(true);
@@ -53,20 +82,29 @@ public class HttpUtils {
                 }
             }
 
-            try (final InputStream is = (con.getErrorStream() == null ? con.getInputStream() : con.getErrorStream())) {
-                return IOUtils.readAllBytes(is);
+
+            byte[] resIS = null;
+            byte[] errorIS = null;
+
+            try (final InputStream is = con.getInputStream()) {
+                if (is != null) {
+                    resIS = IOUtils.readAllBytes(is);
+                }
             }
+
+            try (final InputStream is = con.getErrorStream()) {
+                if (is != null) {
+                    errorIS = IOUtils.readAllBytes(is);
+                }
+            }
+
+            return new HttpResponse(con.getResponseCode(), resIS, con.getContentLengthLong(),
+                    errorIS,
+                    con.getHeaderFields());
         } finally {
-            if (con != null) con.disconnect();
+            if (con != null) {
+                con.disconnect();
+            }
         }
-    }
-
-    public static byte[] request(final String url, final String body, final HttpMethod method) throws IOException,
-            URISyntaxException {
-        return HttpUtils.request(url, null, body, method);
-    }
-
-    public static byte[] request(final String url, final HttpMethod method) throws IOException, URISyntaxException {
-        return HttpUtils.request(url, null, null, method);
     }
 }
