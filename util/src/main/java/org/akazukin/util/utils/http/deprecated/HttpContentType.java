@@ -1,4 +1,4 @@
-package org.akazukin.util.utils.http;
+package org.akazukin.util.utils.http.deprecated;
 
 import lombok.Getter;
 
