@@ -1,5 +1,7 @@
 package org.akazukin.util.utils.animation;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.Color;
 
 public class ColorAnimation {
@@ -9,22 +11,22 @@ public class ColorAnimation {
     private final Animation blue;
     private final Animation alpha;
 
-    public ColorAnimation() {
-        this(null, EnumEasing.SINE.getEasing());
+    public ColorAnimation(final Easing animation) {
+        this(null, animation);
     }
 
-    public ColorAnimation(final Color color, final IEasing animation) {
+    public ColorAnimation(@Nullable final Color color, final Easing animation) {
         this.red = new Animation((color == null) ? 0.0f : color.getRed(), animation);
         this.green = new Animation((color == null) ? 0.0f : color.getGreen(), animation);
         this.blue = new Animation((color == null) ? 0.0f : color.getBlue(), animation);
         this.alpha = new Animation((color == null) ? 0.0f : color.getAlpha(), animation);
     }
 
-    public boolean animateTo(final Color color, final float time) {
-        final boolean r = this.red.animateTo(color.getRed(), time);
-        final boolean g = this.green.animateTo(color.getGreen(), time);
-        final boolean b = this.blue.animateTo(color.getBlue(), time);
-        final boolean a = this.alpha.animateTo(color.getAlpha(), time);
+    public boolean animateTo(final Color color, final long durationMS) {
+        final boolean r = this.red.animateTo(color.getRed(), durationMS).isChanged();
+        final boolean g = this.green.animateTo(color.getGreen(), durationMS).isChanged();
+        final boolean b = this.blue.animateTo(color.getBlue(), durationMS).isChanged();
+        final boolean a = this.alpha.animateTo(color.getAlpha(), durationMS).isChanged();
 
         return r || g || b || a;
     }
@@ -43,5 +45,12 @@ public class ColorAnimation {
         this.green.setValue(color.getGreen());
         this.blue.setValue(color.getBlue());
         this.alpha.setValue(color.getAlpha());
+    }
+
+    public void reset() {
+        this.red.reset();
+        this.green.reset();
+        this.blue.reset();
+        this.alpha.reset();
     }
 }
