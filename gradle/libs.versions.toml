@@ -4,7 +4,7 @@ lombok = "1.18.36"
 gson = "2.12.1"
 doma = "3.4.0"
 slf4j = "2.0.16"
-jetbrains-annotation = "26.0.1"
+jetbrains-annotation = "26.0.2"
 
 #Test Modules
 junit-jupiter = "5.11.3"
