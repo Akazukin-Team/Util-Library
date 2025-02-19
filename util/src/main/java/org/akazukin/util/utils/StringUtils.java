@@ -1,5 +1,10 @@
 package org.akazukin.util.utils;
 
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -12,10 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @UtilityClass
 public class StringUtils {
@@ -222,6 +223,11 @@ public class StringUtils {
         final byte[] result = StringUtils.sha3_512.digest(bytes);
 
         return String.format("%040x", new BigInteger(1, result));
+    }
+
+    @NotNull
+    public static String toStringOrEmpty(final CharSequence s) {
+        return s != null ? s.toString() : "";
     }
 
     @NonNull
