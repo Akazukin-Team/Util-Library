@@ -24,7 +24,7 @@ publishing {
     repositories {
         maven {
             name = "TeamReleases"
-            url = uri("https://maven.raraearth.jp/maven-releases/")
+            url = uri("https://maven.raraearth.jp/upload/maven-releases/")
             credentials {
                 username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
                 password = project.hasProperty("sonatype.password") ? project["sonatype.password"] : System.getenv("SONATYPE_PASSWORD")
@@ -32,7 +32,7 @@ publishing {
         }
         maven {
             name = "TeamSnapshots"
-            url = uri("https://maven.raraearth.jp/maven-snapshots/")
+            url = uri("https://maven.raraearth.jp/upload/maven-snapshots/")
             credentials {
                 username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
                 password = project.hasProperty("sonatype.password") ? project["sonatype.password"] : System.getenv("SONATYPE_PASSWORD")
