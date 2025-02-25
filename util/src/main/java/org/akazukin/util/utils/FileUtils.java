@@ -1,5 +1,8 @@
 package org.akazukin.util.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,8 +18,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Locale;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class FileUtils {
     private static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER =
@@ -69,9 +70,10 @@ public class FileUtils {
     }
 
     /**
-     * @param path In source Jar
-     * @return
-     * @throws IOException
+     * @param classLoader The ClassLoader in which the resource
+     * @param path        In source Jar
+     * @return Bytes of the resources
+     * @throws IOException throw from {@link java.io.InputStream#read(byte[])}
      */
     @Nullable
     public static byte[] getResourcesInJar(final ClassLoader classLoader, final String path) throws IOException {
@@ -90,7 +92,8 @@ public class FileUtils {
             if (url.hasMoreElements()) {
                 return new File(url.nextElement().toURI());
             }
-        } catch (final URISyntaxException | IOException ignored) {}
+        } catch (final URISyntaxException | IOException ignored) {
+        }
         return null;
     }
 }
