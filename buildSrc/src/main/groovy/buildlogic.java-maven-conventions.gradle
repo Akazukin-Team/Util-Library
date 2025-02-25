@@ -1,5 +1,6 @@
 plugins {
     id 'maven-publish'
+    id 'java'
     id 'buildlogic.java-common-conventions'
 }
 
@@ -45,6 +46,12 @@ publishing {
             groupId = project.group
             artifactId = project.artifact
             version = project.version
+
+            artifacts {
+                jar
+                sourcesJar
+                javadoc
+            }
 
             pom {
                 name = props.getProperty("name")
