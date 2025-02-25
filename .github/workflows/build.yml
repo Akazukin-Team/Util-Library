@@ -45,11 +45,8 @@ jobs:
       - name: Build and Test
         run: ./gradlew build test
 
-      - name: Publish to maven local
-        run: ./gradlew publishToMavenLocal
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact
-          path: publish/build/libs/
+      - name: Publish to Sonatype
+        run: ./gradlew publishMavenPublicationToTeamSnapshotsRepository
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}

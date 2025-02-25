@@ -23,7 +23,7 @@ try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath()
 publishing {
     repositories {
         maven {
-            name = "TeamSnapshotsRepo"
+            name = "TeamSnapshots"
             url = uri("https://maven.raraearth.jp/maven-snapshots/")
             credentials {
                 username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
@@ -31,7 +31,7 @@ publishing {
             }
         }
         maven {
-            name = "TeamReleasesRepo"
+            name = "TeamReleases"
             url = uri("https://maven.raraearth.jp/maven-releases/")
             credentials {
                 username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
