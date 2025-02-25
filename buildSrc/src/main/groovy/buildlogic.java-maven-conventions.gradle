@@ -39,6 +39,7 @@ publishing {
                 password = project.hasProperty("sonatype.password") ? project["sonatype.password"] : System.getenv("SONATYPE_PASSWORD")
             }
         }
+        mavenLocal()
     }
 
     publications {
@@ -47,11 +48,7 @@ publishing {
             artifactId = project.artifact
             version = project.version
 
-            artifacts {
-                jar
-                sourcesJar
-                javadoc
-            }
+            from components.java
 
             pom {
                 name = props.getProperty("name")
@@ -76,6 +73,8 @@ publishing {
             groupId = project.group
             artifactId = project.artifact
             version = "${project.version}-SNAPSHOT"
+
+            from components.java
 
             pom {
                 name = props.getProperty("name")
