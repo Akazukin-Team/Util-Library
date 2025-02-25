@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'maven-publish'
     id 'buildlogic.java-common-conventions'
@@ -41,10 +43,37 @@ publishing {
     }
 
     publications {
-        maven(MavenPublication) {
+        release(MavenPublication) {
             groupId = project.group
             artifactId = project.artifact
             version = project.version
+
+            pom {
+                name = props.getProperty("name")
+                description = props.getProperty("description")
+                url = props.getProperty("url")
+
+                organization {
+                    name = props.getProperty("vendor")
+                    url = props.getProperty("vendor-url")
+                }
+
+                developers {
+                    developer {
+                        id = 'currypan1229'
+                        name = 'Currypan1229'
+                    }
+                }
+            }
+        }
+
+        snapshot(MavenPublication) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS")
+            String snapshotVer = sdf.format(new Date())
+
+            groupId = project.group
+            artifactId = project.artifact
+            version = "${project.version}-${snapshotVer}-SNAPSHOT"
 
             pom {
                 name = props.getProperty("name")
