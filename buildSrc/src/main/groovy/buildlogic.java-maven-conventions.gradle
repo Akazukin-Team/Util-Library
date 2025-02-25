@@ -23,11 +23,19 @@ try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath()
 publishing {
     repositories {
         maven {
-            name = "gpr"
-            url = uri("https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY"))
+            name = "TeamSnapshots"
+            url = uri("https://maven.raraearth.jp/maven-snapshots/")
             credentials {
-                username = System.getenv("GITHUB_REPOSITORY_OWNER")
-                password = System.getenv("GITHUB_TOKEN")
+                username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
+                password = project.hasProperty("sonatype.password") ? project["sonatype.password"] : System.getenv("SONATYPE_PASSWORD")
+            }
+        }
+        maven {
+            name = "TeamReleases"
+            url = uri("https://maven.raraearth.jp/maven-releases/")
+            credentials {
+                username = project.hasProperty("sonatype.username") ? project["sonatype.username"] : System.getenv("SONATYPE_USERNAME")
+                password = project.hasProperty("sonatype.password") ? project["sonatype.password"] : System.getenv("SONATYPE_PASSWORD")
             }
         }
     }
