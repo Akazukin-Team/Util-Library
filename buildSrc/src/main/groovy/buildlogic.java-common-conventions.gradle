@@ -15,7 +15,6 @@ repositories {
         url = "https://jitpack.io/"
     }
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
@@ -44,11 +43,6 @@ tasks.withType(Javadoc).configureEach {
 }
 
 tasks.jar.dependsOn(processResources)
-
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
 
 tasks.withType(AbstractCopyTask).configureEach {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
