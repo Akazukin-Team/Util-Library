@@ -11,10 +11,8 @@ configurations {
 
 java {
     withSourcesJar()
-    //withJavadocJar()
+    withJavadocJar()
 }
-
-jar.enabled = true
 
 Properties props = new Properties()
 try (FileInputStream fis = new FileInputStream(new File(parent.rootDir.getPath(), "application.properties"))) {
