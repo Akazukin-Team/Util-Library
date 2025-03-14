@@ -96,4 +96,13 @@ public class FileUtils {
         }
         return null;
     }
+
+    public static String getBaseFileName(final String fileName) {
+        final int index = fileName.lastIndexOf(".");
+        if (index == -1) {
+            return fileName;
+        }
+
+        return fileName.substring(0, index);
+    }
 }
