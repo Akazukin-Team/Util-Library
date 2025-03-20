@@ -18,8 +18,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.Objects;
 
 public class FileUtils {
+    public static final String FILE_IS_NOT_DIRECTORY = "file is not a directory.";
+    public static final String FILE_IS_NOT_EXISTS = "file is not exists.";
+
     private static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT);
 
@@ -104,5 +108,28 @@ public class FileUtils {
         }
 
         return fileName.substring(0, index);
+    }
+
+    /**
+     * Recursively delete the specified folder and any files and directories inside it.
+     *
+     * @param folder the folder to delete
+     * @throws FileNotFoundException folder not found
+     */
+    public static void deleteDirectory(final File folder) throws FileNotFoundException {
+        if (!folder.exists()) {
+            throw new FileNotFoundException();
+        }
+        if (folder.isFile()) {
+            throw new IllegalStateException(FILE_IS_NOT_DIRECTORY);
+        }
+
+        for (final File f : Objects.requireNonNull(folder.listFiles())) {
+            if (f.isFile()) {
+                f.delete();
+            } else {
+                deleteDirectory(f);
+            }
+        }
     }
 }
