@@ -3,6 +3,7 @@ package org.akazukin.util.utils;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.util.Map;
@@ -24,8 +25,8 @@ public class Scheduler implements Closeable {
         this(false);
     }
 
-    public Scheduler(final boolean deamon) {
-        this.timer = new Timer(deamon);
+    public Scheduler(final boolean daemon) {
+        this.timer = new Timer(daemon);
     }
 
     public boolean isScheduled(final long id) {
@@ -33,7 +34,10 @@ public class Scheduler implements Closeable {
     }
 
     public void cancelAllTasks() {
-        this.tasks.keySet().forEach(this::cancel);
+        synchronized (this.tasks) {
+            this.tasks.keySet().forEach(this::cancel);
+            this.tasks.clear();
+        }
     }
 
     public void cancel(final long id) {
@@ -47,7 +51,7 @@ public class Scheduler implements Closeable {
         }
     }
 
-    public void scheduleTask(final long id, final Runnable task, final long delay) {
+    public void scheduleTask(final long id, @NotNull final Runnable task, final long delay) {
         final TimerTask timerTask = this.createTimerTask(task);
         this.timer.schedule(timerTask, delay);
 
@@ -59,7 +63,7 @@ public class Scheduler implements Closeable {
         }
     }
 
-    private TimerTask createTimerTask(final Runnable task) {
+    private TimerTask createTimerTask(@NotNull final Runnable task) {
         return new TimerTask() {
             @Override
             public void run() {
@@ -74,7 +78,7 @@ public class Scheduler implements Closeable {
         };
     }
 
-    public void scheduleLoopingTask(final long id, final Runnable task, final long delay, final long interval) {
+    public void scheduleLoopingTask(final long id, @NotNull final Runnable task, final long delay, final long interval) {
         final TimerTask timerTask = this.createTimerTask(task);
         this.timer.schedule(timerTask, delay, interval);
 
