@@ -8,4 +8,6 @@ dependencies {
 
     compileOnly libs.jetbrains.annotations
     annotationProcessor libs.jetbrains.annotations
+
+    implementation libs.slf4j
 }

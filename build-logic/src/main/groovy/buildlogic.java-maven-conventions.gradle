@@ -1,17 +1,11 @@
 plugins {
     id 'maven-publish'
     id 'java'
-    id 'buildlogic.java-common-conventions'
-}
-
-configurations {
-    include
-    implementation.extendsFrom(include)
 }
 
 java {
     withSourcesJar()
-    //withJavadocJar()
+    withJavadocJar()
 }
 
 jar.enabled = true
