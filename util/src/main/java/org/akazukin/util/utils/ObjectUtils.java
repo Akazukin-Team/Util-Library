@@ -45,6 +45,14 @@ public class ObjectUtils {
         throw new IllegalArgumentException("Invalid boolean value " + bool);
     }
 
+    /**
+     * Converts a {@link Boolean} value to its corresponding {@link Byte} representation.
+     * If the boolean value is true, it returns 1. If the value is false, it returns 0.
+     * If the input is null, it returns null.
+     *
+     * @param bool the {@link Boolean} value to be converted, which can be null.
+     * @return the {@link Byte} representation of the boolean value, or null if the input is null.
+     */
     @Nullable
     public static Byte toByte(@Nullable final Boolean bool) {
         return bool != null ? (byte) (bool ? 1 : 0) : null;

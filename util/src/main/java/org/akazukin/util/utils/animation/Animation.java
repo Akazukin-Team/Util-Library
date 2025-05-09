@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Deprecated
 public class Animation {
     private static final long MS_TO_NS = 1000000L;
 

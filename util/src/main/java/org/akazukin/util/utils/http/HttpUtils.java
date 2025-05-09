@@ -18,6 +18,20 @@ import java.net.URLConnection;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Utility class providing static methods for making HTTP requests.
+ * This class simplifies the process of configuring and executing HTTP and HTTPS requests,
+ * with support for request headers, request bodies, custom HTTP methods, and configurable timeouts.
+ * <p>
+ * HttpUtils is designed as a utility class and cannot be instantiated.
+ * It provides helper methods for performing HTTP operations and managing configurations.
+ * <p>
+ * Features:
+ * - Default configuration for connection and read timeouts.
+ * - Support for HTTP and HTTPS protocols.
+ * - Configurable request headers and body.
+ * - Customizable request configurations through {@code HttpConfig}.
+ */
 @UtilityClass
 public class HttpUtils {
     private final static HttpConfig DEFAULT_CONFIG = new HttpConfig();
@@ -34,6 +48,27 @@ public class HttpUtils {
     }
 
 
+    /**
+     * Sends an HTTP request to the specified URL with optional headers, body, and the desired HTTP method.
+     * <p>
+     * This method leverages the default configuration for HTTP connection settings and supports both HTTP
+     * and HTTPS protocols.
+     * It processes the request based on the specified HTTP method, headers, and body.
+     * The response, including status code, headers, body, and error (if any),
+     * is encapsulated in an {@link HttpResponse} object and returned.
+     *
+     * @param url    the URL to send the HTTP request to. Must not be null.
+     * @param header a {@link Properties} object containing request headers.
+     *               Can be null or empty.
+     * @param body   the request body to be sent.
+     *               Can be null if the HTTP method does not require a body.
+     * @param method the HTTP method to use for the request (e.g., GET, POST).
+     *               Must not be null.
+     * @return an {@link HttpResponse} object containing the HTTP response details, including status
+     * code, body, headers, and any error content if applicable.
+     * @throws IOException        if an I/O error occurs during request or response handling.
+     * @throws URISyntaxException if the provided URL is malformed or uses an unsupported protocol.
+     */
     public HttpResponse request(@NonNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
                                 @NonNull final HttpMethod method)
@@ -41,6 +76,30 @@ public class HttpUtils {
         return request(url, header, body, method, DEFAULT_CONFIG);
     }
 
+    /**
+     * Sends an HTTP request to the specified URL using the provided configurations, headers, and body.
+     * <p>
+     * This method supports both HTTP and HTTPS protocols, allowing customized configurations for connectivity,
+     * such as timeouts, headers, and redirect behavior.
+     * It constructs the request with the specified HTTP method and sends the request body if provided.
+     * The response, including status code, headers, and body,
+     * is returned encapsulated within a {@link HttpResponse} object.
+     *
+     * @param url    the URL to send the HTTP request to.
+     *               Must not be null.
+     * @param header a {@link Properties} object containing request headers.
+     *               Can be null or empty.
+     * @param body   the request body to be sent.
+     *               Can be null if the method does not require a body.
+     * @param method the HTTP method to use for the request (e.g., GET, POST).
+     *               Must not be null.
+     * @param config the HTTP configuration object specifying connection settings and behaviors.
+     *               Must not be null.
+     * @return an {@link HttpResponse} object containing the status code, response body, headers,
+     * error body (if any), and content length.
+     * @throws IOException        if an I/O exception occurs during the request or response handling.
+     * @throws URISyntaxException if the provided URL is invalid or the protocol is not supported.
+     */
     public HttpResponse request(@NonNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
                                 @NonNull final HttpMethod method,

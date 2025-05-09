@@ -3,6 +3,7 @@ package org.akazukin.util.utils;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
+import org.akazukin.util.annotation.ThreadSafe;
 import org.akazukin.util.object.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,10 +14,20 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+/**
+ * Scheduler is a thread-safe utility class for managing and scheduling tasks
+ * with support for one-time and recurring task execution.
+ * Tasks are uniquely identified by an ID and can be managed through
+ * various scheduling and cancellation methods. It provides mechanisms
+ * to handle exceptions during task execution via a configurable consumer.
+ * The Scheduler also supports graceful shutdown to manage lifecycle effectively.
+ */
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ThreadSafe
 public class Scheduler implements Closeable {
     final ScheduledExecutorService timer;
 
@@ -25,14 +36,56 @@ public class Scheduler implements Closeable {
     @Nullable
     Consumer<Throwable> throwableConsumer;
 
+    /**
+     * Constructs a default {@code Scheduler} instance with a single thread.
+     * This scheduler uses a scheduled thread pool to manage task execution.
+     */
     public Scheduler() {
-        this(false);
+        this(1);
     }
 
-    public Scheduler(final boolean daemon) {
-        this.timer = Executors.newScheduledThreadPool(1);
+    /**
+     * Constructs a {@code Scheduler} instance with a specified number of threads.
+     * This scheduler uses a scheduled thread pool to manage task execution.
+     *
+     * @param threads the number of threads to be used in the scheduled thread pool.
+     *                Must be a positive integer.
+     */
+    public Scheduler(final int threads) {
+        this.timer = Executors.newScheduledThreadPool(threads);
     }
 
+    /**
+     * Constructs a {@code Scheduler} instance using a default of one thread with a custom thread factory.
+     * This scheduler uses a scheduled thread pool to manage task execution.
+     *
+     * @param threadFactory the {@link ThreadFactory} to use for creating new threads in the thread pool.
+     *                      Must not be {@code null}.
+     */
+    public Scheduler(final ThreadFactory threadFactory) {
+        this(1, threadFactory);
+    }
+
+    /**
+     * Constructs a {@code Scheduler} instance with a specified number of threads and a custom thread factory.
+     * This scheduler uses a scheduled thread pool to manage task execution.
+     *
+     * @param threads       the number of threads to be used in the scheduled thread pool.
+     *                      Must be a positive integer.
+     * @param threadFactory the {@link ThreadFactory} to use for creating new threads in the thread pool.
+     *                      Must not be {@code null}.
+     */
+    public Scheduler(final int threads, final ThreadFactory threadFactory) {
+        this.timer = Executors.newScheduledThreadPool(threads, threadFactory);
+    }
+
+    /**
+     * Sets a consumer to handle {@link Throwable} instances encountered during scheduled task execution.
+     * If a consumer is provided, it will be invoked whenever a {@link Throwable} is thrown by a task.
+     *
+     * @param throwableConsumer a {@link Consumer} to process {@link Throwable} instances. It may be {@code null},
+     *                          in which case no actions will be taken when a {@link Throwable} is encountered.
+     */
     public synchronized void setThrowableConsumer(final @Nullable Consumer<Throwable> throwableConsumer) {
         this.throwableConsumer = throwableConsumer;
     }
