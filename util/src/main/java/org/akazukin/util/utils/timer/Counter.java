@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.util.ext.Resettable;
+import org.akazukin.util.interfaces.Resettable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class Counter implements Resettable {
