@@ -14,17 +14,17 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Utility class to perform various file-related operations such as creating directories,
+ * reading resources, and manipulating file paths. This class includes both general-purpose
+ * methods and specialized methods for handling files within JAR archives.
+ */
 public class FileUtils {
     public static final String FILE_IS_NOT_DIRECTORY = "file is not a directory.";
     public static final String FILE_IS_NOT_EXISTS = "file is not exists.";
-
-    private static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT);
 
     /**
      * Retrieves the application file as an absolute file. The returned file
@@ -67,6 +67,15 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Reads the content of the specified file and returns it as a string.
+     * If the file is not found or is null, the method returns null.
+     * If an I/O error occurs, it throws an IOException.
+     *
+     * @param file the file to read content from; must not be null
+     * @return a string containing the contents of the file, or null if the file is not found
+     * @throws IOException if an I/O error occurs while reading the file
+     */
     @Nullable
     public static String getResourceAsString(final File file) throws IOException {
         try {
@@ -122,8 +131,9 @@ public class FileUtils {
      * If the resource cannot be found or an error occurs, the method returns null.
      *
      * @param classLoader the {@link ClassLoader} used to locate the resource. Must not be null.
-     * @param path the resource path inside the JAR file. Must not be null or empty.
-     * @return a {@link File} object representing the resource if found, or*/
+     * @param path        the resource path inside the JAR file. Must not be null or empty.
+     * @return a {@link File} object representing the resource if found, or
+     */
     @Nullable
     public static File getPathInJar(final ClassLoader classLoader, final String path) {
         try {

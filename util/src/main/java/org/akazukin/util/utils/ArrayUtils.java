@@ -4,9 +4,14 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Array;
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
+/**
+ * A utility class for performing various operations on arrays such as concatenation,
+ * splitting, and type-specific manipulations.
+ */
 @UtilityClass
 public class ArrayUtils {
     /**
@@ -36,14 +41,48 @@ public class ArrayUtils {
         return res;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T[] fromList(final List<T> list) {
-        return list.toArray((T[]) Array.newInstance(list.get(0).getClass(), list.size()));
+    /**
+     * Joins the elements of the provided array into a single string, with each element
+     * separated by the specified delimiter.
+     *
+     * @param character the delimiter to be used between elements. Must not be null.
+     * @param arr       the array of objects to join. Each object's {@link Object#toString()} method
+     *                  will be called to get its string representation. Must not be null.
+     * @return a single string containing all elements of the array, separated by the specified delimiter.
+     */
+    @NonNull
+    public static String join(@NonNull final String character, @NonNull final Object[] arr) {
+        return Arrays.stream(arr)
+                .map(String::valueOf)
+                .collect(Collectors.joining(character));
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Creates an {@link IntFunction} that generates arrays of the specified type.
+     * The function takes the desired size of the array as input and returns a new array
+     * of that size, with the specified type.
+     *
+     * @param <T>   the type of elements in the array
+     * @param clazz the {@link Class} of the type to create arrays for
+     * @return an {@link IntFunction} that generates arrays of the specified type and size
+     */
     public <T> IntFunction<T[]> collectToArray(final Class<T> clazz) {
-        return size -> (T[]) Array.newInstance(clazz, size);
+        return size -> getNewArray(clazz, size);
+    }
+
+    /**
+     * Creates a new array of a specified type and size.
+     *
+     * @param <T>  the type of the array elements
+     * @param type the {@link Class} of the type to create the array for
+     * @param size the size of the new array
+     * @return a new array of the specified type and size
+     * @throws NullPointerException       if the {@code type} parameter is null
+     * @throws NegativeArraySizeException if the {@code size} parameter is negative
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T[] getNewArray(final Class<T> type, final int size) {
+        return (T[]) Array.newInstance(type, size);
     }
 
     /**
@@ -63,7 +102,7 @@ public class ArrayUtils {
         }
 
         final Class<T> type = (Class<T>) array.getClass().getComponentType();
-        final T[][] arr = (T[][]) Array.newInstance(getArrayClass(type), MathUtils.divisionWithCarry(array.length, size));
+        final T[][] arr = getNewArray(getArrayClass(type), MathUtils.divisionWithCarry(array.length, size));
         int pos = 0;
         int index = 0;
         while (size - pos > 0) {
@@ -97,7 +136,8 @@ public class ArrayUtils {
             throw new ArrayIndexOutOfBoundsException("Invalid range");
         }
 
-        final T[] copy = (T[]) Array.newInstance(array.getClass().getComponentType(), length);
+        @SuppressWarnings("unchecked") final T[] copy =
+                getNewArray((Class<T>) array.getClass().getComponentType(), length);
         if (length == 0) {
             return copy;
         }
@@ -106,8 +146,30 @@ public class ArrayUtils {
         return copy;
     }
 
+    /**
+     * Returns the {@link Class} object representing an array type of the specified class.
+     * For example, if the provided class represents type {@code T}, this method returns
+     * the {@link Class} object for {@code T[]}.
+     *
+     * @param <T>   the type of elements in the array
+     * @param clazz the {@link Class} object representing the element type of the array;
+     *              must not be null
+     * @return the {@link Class} object representing an array of the specified type
+     * @throws NullPointerException if the {@code clazz} parameter is null
+     */
     @SuppressWarnings("unchecked")
     public <T> Class<T[]> getArrayClass(final Class<T> clazz) {
-        return (Class<T[]>) Array.newInstance(clazz, 0).getClass();
+        return (Class<T[]>) getNewArray(clazz, 0).getClass();
+    }
+
+    /**
+     * Selects and returns a random element from the provided array.
+     *
+     * @param <T>  the type of the elements in the array
+     * @param list an array of elements from which a random element is selected; must not be null
+     * @return a randomly selected element from the provided array
+     */
+    public <T> T getByRandom(@NonNull final T[] list) {
+        return list[((Double) (Math.random() * list.length)).intValue()];
     }
 }

@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+/**
+ * Utility class for performing common Input/Output operations.
+ * This class provides methods to handle {@link InputStream} reading and conversion.
+ */
 @UtilityClass
 public class IOUtils {
     /**

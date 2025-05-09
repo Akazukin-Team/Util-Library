@@ -6,6 +6,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class for handling operations related to UUIDs (Universally Unique Identifiers).
+ * This class provides methods to validate UUID formats, validate UUID versions,
+ * and convert strings to UUID objects.
+ */
 @UtilityClass
 public class UUIDUtils {
     public final static String UUID_VERSION_EXCEPTION = "The UUID version is not supported";

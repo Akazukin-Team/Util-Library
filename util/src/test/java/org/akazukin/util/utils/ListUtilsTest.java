@@ -1,7 +1,6 @@
 package org.akazukin.util.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 class ListUtilsTest {
-
     @Test
     void testListCopyWithValidInputs() {
         final List<Integer> source = Arrays.asList(1, 2, 3, 4, 5);
@@ -18,7 +16,7 @@ class ListUtilsTest {
 
         ListUtils.listCopy(source, 1, destination, 2, 3);
 
-        assertEquals(Arrays.asList(null, null, 2, 3, 4), destination);
+        Assertions.assertEquals(Arrays.asList(null, null, 2, 3, 4), destination);
     }
 
     @Test
@@ -26,7 +24,7 @@ class ListUtilsTest {
         final List<Integer> source = Arrays.asList(1, 2, 3);
         final List<Integer> destination = new ArrayList<>();
 
-        assertThrows(IndexOutOfBoundsException.class, () ->
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
                 ListUtils.listCopy(source, -1, destination, 0, 1));
     }
 
@@ -35,7 +33,7 @@ class ListUtilsTest {
         final List<Integer> source = Arrays.asList(1, 2, 3);
         final List<Integer> destination = new ArrayList<>();
 
-        assertThrows(IndexOutOfBoundsException.class, () ->
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
                 ListUtils.listCopy(source, 0, destination, -1, 1));
     }
 
@@ -44,7 +42,7 @@ class ListUtilsTest {
         final List<Integer> source = Arrays.asList(1, 2, 3);
         final List<Integer> destination = new ArrayList<>();
 
-        assertThrows(IndexOutOfBoundsException.class, () ->
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
                 ListUtils.listCopy(source, 0, destination, 0, -1));
     }
 
@@ -53,7 +51,7 @@ class ListUtilsTest {
         final List<Integer> source = Arrays.asList(1, 2, 3);
         final List<Integer> destination = new ArrayList<>(Arrays.asList(null, null, null));
 
-        assertThrows(IndexOutOfBoundsException.class, () ->
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
                 ListUtils.listCopy(source, 2, destination, 0, 2));
     }
 
@@ -62,7 +60,7 @@ class ListUtilsTest {
         final List<Integer> source = Arrays.asList(1, 2, 3);
         final List<Integer> destination = new ArrayList<>(Arrays.asList(null, null, null));
 
-        assertThrows(IndexOutOfBoundsException.class, () ->
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
                 ListUtils.listCopy(source, 0, destination, 2, 2));
     }
 
@@ -72,10 +70,10 @@ class ListUtilsTest {
 
         final List<Integer>[] result = ListUtils.split(list, 2);
 
-        assertEquals(3, result.length);
-        assertEquals(Arrays.asList(1, 2), result[0]);
-        assertEquals(Arrays.asList(3, 4), result[1]);
-        assertEquals(Arrays.asList(5, 6), result[2]);
+        Assertions.assertEquals(3, result.length);
+        Assertions.assertEquals(Arrays.asList(1, 2), result[0]);
+        Assertions.assertEquals(Arrays.asList(3, 4), result[1]);
+        Assertions.assertEquals(Arrays.asList(5, 6), result[2]);
     }
 
     @Test
@@ -84,10 +82,10 @@ class ListUtilsTest {
 
         final List<Integer>[] result = ListUtils.split(list, 2);
 
-        assertEquals(3, result.length);
-        assertEquals(Arrays.asList(1, 2), result[0]);
-        assertEquals(Arrays.asList(3, 4), result[1]);
-        assertEquals(Collections.singletonList(5), result[2]);
+        Assertions.assertEquals(3, result.length);
+        Assertions.assertEquals(Arrays.asList(1, 2), result[0]);
+        Assertions.assertEquals(Arrays.asList(3, 4), result[1]);
+        Assertions.assertEquals(Collections.singletonList(5), result[2]);
     }
 
     @Test
@@ -96,8 +94,8 @@ class ListUtilsTest {
 
         final List<Integer>[] result = ListUtils.split(list, 5);
 
-        assertEquals(1, result.length);
-        assertEquals(Arrays.asList(1, 2, 3), result[0]);
+        Assertions.assertEquals(1, result.length);
+        Assertions.assertEquals(Arrays.asList(1, 2, 3), result[0]);
     }
 
     @Test
@@ -106,7 +104,7 @@ class ListUtilsTest {
 
         final List<Integer>[] result = ListUtils.split(list, 2);
 
-        assertEquals(0, result.length);
+        Assertions.assertEquals(0, result.length);
     }
 
     @Test
@@ -114,9 +112,9 @@ class ListUtilsTest {
         final List<Integer> list = Arrays.asList(1, 2, 3);
 
         final IllegalArgumentException exception =
-                assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, -1));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, -1));
 
-        assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
+        Assertions.assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
     }
 
     @Test
@@ -124,8 +122,8 @@ class ListUtilsTest {
         final List<Integer> list = Arrays.asList(1, 2, 3);
 
         final IllegalArgumentException exception =
-                assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, 0));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, 0));
 
-        assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
+        Assertions.assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
     }
 }

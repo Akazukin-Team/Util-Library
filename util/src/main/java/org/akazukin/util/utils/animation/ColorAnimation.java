@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 
+@Deprecated
 public class ColorAnimation {
 
     private final Animation red;

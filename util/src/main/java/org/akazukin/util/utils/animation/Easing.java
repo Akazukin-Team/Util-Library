@@ -1,6 +1,7 @@
 package org.akazukin.util.utils.animation;
 
 @FunctionalInterface
+@Deprecated
 public interface Easing {
     Easing LINEAR = value -> value;
     Easing SINE = value -> Math.sin(value * Math.PI / 2);

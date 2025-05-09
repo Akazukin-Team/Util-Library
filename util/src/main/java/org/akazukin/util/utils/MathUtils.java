@@ -2,6 +2,14 @@ package org.akazukin.util.utils;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class providing mathematical operations and calculations.
+ * This class includes methods for range validation, clamping values,
+ * calculating maximum and minimum for variable-length arguments, and
+ * specialized number manipulations such as rounding and formatting.
+ * Each method is designed to handle various numerical types such as
+ * integers, floats, doubles, and longs.
+ */
 @UtilityClass
 public class MathUtils {
     /**

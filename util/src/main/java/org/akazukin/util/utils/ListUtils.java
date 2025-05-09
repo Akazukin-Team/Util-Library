@@ -2,7 +2,6 @@ package org.akazukin.util.utils;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -12,14 +11,12 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class ListUtils {
-    public static final List[] EMPTY_LIST = new List[0];
+    public static final List[] EMPTY_LIST = {};
     public static final String SIZE_NOT_POSITIVE = "size must be positive";
 
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> cast(@NonNull final List<?> list) {
-        return list.stream().map(o -> (T) o).collect(Collectors.toList());
-    }
-
+    public static final String SRC_POS_IS_NEGATIVE = "srcPos is negative";
+    public static final String DEST_POS_IS_NEGATIVE = "destPos is negative";
+    public static final String LENGTH_IS_NEGATIVE = "length is negative";
 
     /**
      * Splits the given list into smaller sublists of the specified size.
@@ -80,13 +77,13 @@ public class ListUtils {
      */
     public void listCopy(final Object src, final int srcPos, final Object dest, final int destPos, final int length) throws IndexOutOfBoundsException, ClassCastException {
         if (srcPos < 0) {
-            throw new IndexOutOfBoundsException("srcPos is negative");
+            throw new IndexOutOfBoundsException(SRC_POS_IS_NEGATIVE);
         }
         if (destPos < 0) {
-            throw new IndexOutOfBoundsException("destPos is negative");
+            throw new IndexOutOfBoundsException(DEST_POS_IS_NEGATIVE);
         }
         if (length < 0) {
-            throw new IndexOutOfBoundsException("length is negative");
+            throw new IndexOutOfBoundsException(LENGTH_IS_NEGATIVE);
         }
 
         final List listSrc = (List) src;
@@ -104,25 +101,30 @@ public class ListUtils {
         }
     }
 
+    /**
+     * Joins the elements of the provided list into a single string, with each element
+     * separated by the specified delimiter.
+     *
+     * @param character the delimiter to be used between elements. Must not be null.
+     * @param list      the list of objects to join. Each object's {@link Object#toString()} method
+     *                  will be called to get its string representation. Must not be null.
+     * @return a single string containing all elements of the list, separated by the specified delimiter.
+     */
     @NonNull
-    public static String join(@Nullable final String character, @NonNull final Collection<?> list) {
-        return ListUtils.join(character, list.toArray());
-    }
-
-    @NonNull
-    public static String join(@Nullable final String character, @NonNull final Object[] list) {
-        return Arrays.stream(list)
+    public String join(@NonNull final String character, @NonNull final Collection<?> list) {
+        return list.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining(character != null ? character : ""));
+                .collect(Collectors.joining(character));
     }
 
-    @Nullable
-    public static <T> T getByRandom(@NonNull final T[] list) {
-        return list[((Double) (Math.random() * list.length)).intValue()];
-    }
-
-    @Nullable
-    public static <T> T getByRandom(@NonNull final List<T> list) {
+    /**
+     * Selects and returns a random element from the provided list.
+     *
+     * @param <T>  the type of the elements in the list
+     * @param list a list of elements from which a random element is selected; must not be null
+     * @return a randomly selected element from the provided list
+     */
+    public <T> T getByRandom(@NonNull final List<T> list) {
         return list.get(((Double) (Math.random() * list.size())).intValue());
     }
 }
