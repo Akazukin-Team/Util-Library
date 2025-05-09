@@ -14,7 +14,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -27,15 +26,38 @@ public class FileUtils {
     private static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT);
 
+    /**
+     * Retrieves the application file as an absolute file. The returned file
+     * represents the current working directory in which the application is executed.
+     *
+     * @return a {@link File} object representing the application file with an absolute path.
+     */
     @NotNull
     public static File getApplicationFile() {
         return new File("").getAbsoluteFile();
     }
 
+    /**
+     * Creates a directory at the specified path if it does not already exist.
+     * {@link #createDirectory(Path)} is called with the provided path.
+     *
+     * @param path the string representation of the directory path to be created.
+     *             Must not be null or empty.
+     * @throws IOException if an I/O error occurs during the creation of the directory.
+     */
     public static void createDirectory(final String path) throws IOException {
         FileUtils.createDirectory(Paths.get(path));
     }
 
+    /**
+     * Creates a new directory at the specified path. If the directory already exists,
+     * the method does nothing. If an I/O error occurs while creating the directory,
+     * an exception is thrown.
+     *
+     * @param path the path where the directory should be created. Must not be null and
+     *             should represent a valid file path.
+     * @throws IOException if an I/O error occurs or the directory cannot be created.
+     */
     public static void createDirectory(final Path path) throws IOException {
         try {
             Files.createDirectory(path);
@@ -46,7 +68,7 @@ public class FileUtils {
     }
 
     @Nullable
-    public static String getContent(final File file) throws IOException {
+    public static String getResourceAsString(final File file) throws IOException {
         try {
             final byte[] res = getResource(file);
             if (res == null) {
@@ -58,6 +80,15 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Reads all bytes from the specified file and returns them as a byte array.
+     * If the file does not exist or is null, the method returns null.
+     * If an I/O error occurs, it throws an IOException.
+     *
+     * @param file the file to read bytes from; must not be null
+     * @return a byte array containing the contents of the file, or null if the file is not found
+     * @throws IOException if an I/O error occurs while reading the file
+     */
     @Nullable
     public static byte[] getResource(final File file) throws IOException {
         try (final FileInputStream fis = new FileInputStream(file)) {
@@ -67,10 +98,6 @@ public class FileUtils {
         } catch (final IOException e) {
             throw e;
         }
-    }
-
-    public static String getFilenameFormattedDateTime() {
-        return FileUtils.FILENAME_DATE_TIME_FORMATTER.format(ZonedDateTime.now());
     }
 
     /**
@@ -89,6 +116,14 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Retrieves a file within a JAR using the given class loader and resource path.
+     * If the resource is located, it will return a {@link File} representation of the resource.
+     * If the resource cannot be found or an error occurs, the method returns null.
+     *
+     * @param classLoader the {@link ClassLoader} used to locate the resource. Must not be null.
+     * @param path the resource path inside the JAR file. Must not be null or empty.
+     * @return a {@link File} object representing the resource if found, or*/
     @Nullable
     public static File getPathInJar(final ClassLoader classLoader, final String path) {
         try {
@@ -101,6 +136,14 @@ public class FileUtils {
         return null;
     }
 
+    /**
+     * Extracts the base file name from a given file name, excluding the file extension.
+     * If the file name does not contain a period ('.'), the original file name is returned.
+     *
+     * @param fileName the full name of the file, including the extension. Must not be null.
+     * @return the base file name without the extension, or the original file name if no extension exists.
+     */
+    @Deprecated
     public static String getBaseFileName(final String fileName) {
         final int index = fileName.lastIndexOf(".");
         if (index == -1) {

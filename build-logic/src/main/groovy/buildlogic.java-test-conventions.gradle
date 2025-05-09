@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform
+
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
+}

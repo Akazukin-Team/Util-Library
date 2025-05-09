@@ -15,18 +15,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @UtilityClass
 public class StringUtils {
     public static final String[] EMPTY_ARRAY = new String[0];
     private static final MessageDigest sha3_512;
-    private static final Pattern TIME_PATTERN = Pattern.compile("^([0-9]+)(:([0-9]+))?(:([0-9]+))?(:([0-9]+))?(:" +
-            "([0-9]+))?$");
-    private static final Pattern TIME_PATTERN2 = Pattern.compile("^(([0-9]+)(?i)(y|years?|年間?))?(([0-9]+)(M|(?i)" +
-            "months?|月間?))?(([0-9]+)(?i)(w|weeks?|週間?))?(([0-9]+)(?i)(d|days?|日間?))?(([0-9]+)(?i)(h|hours?|時間?))?(" +
-            "([0-9]+)(m|(?i)minutes?|分間?))?(([0-9]+)(?i)(s|seconds?|秒間?))?$");
 
     static {
         try {
@@ -36,55 +29,6 @@ public class StringUtils {
         }
     }
 
-    public static long parseTime(final String timeStr) {
-        long years = 0;
-        long months = 0;
-        long weeks = 0;
-        long days = 0;
-        long hours = 0;
-        long minutes = 0;
-        long seconds = 0;
-
-        final Matcher m = StringUtils.TIME_PATTERN.matcher(timeStr);
-        if (m.matches()) {
-            int i = 0;
-            for (int i2 = m.groupCount(); i2 > 0; i2--) {
-                if (i2 % 2 == 0) continue;
-                final String g = m.group(i2);
-                if (g == null) continue;
-                try {
-                    final int parsed = Integer.parseInt(g);
-                    if (i == 0) seconds += parsed;
-                    else if (i == 1) minutes += parsed;
-                    else if (i == 2) hours += parsed;
-                    else if (i == 3) days += parsed;
-                    else if (i == 4) years += parsed;
-                } catch (final NumberFormatException ignored) {
-                }
-                i++;
-            }
-        }
-
-        final Matcher m2 = StringUtils.TIME_PATTERN2.matcher(timeStr.replaceAll("(and| " +
-                "|\t|,)", ""));
-        if (m2.matches()) {
-            for (int i = 0; i < m2.groupCount(); i++) {
-                try {
-                    final int parsed = Integer.parseInt(m2.group(i));
-                    if (i == 2) years += parsed;
-                    else if (i == 5) months += parsed;
-                    else if (i == 8) weeks += parsed;
-                    else if (i == 11) days += parsed;
-                    else if (i == 14) hours += parsed;
-                    else if (i == 17) minutes += parsed;
-                    else if (i == 20) seconds += parsed;
-                } catch (final NumberFormatException ignored) {
-                }
-            }
-        }
-
-        return (long) ((((((((years * 365.25) + (months * 30.4375) + (weeks * 7) + days) * 24) + hours) * 60) + minutes) * 60) + seconds);
-    }
 
     public static int getLimitedLevenshteinDistance(CharSequence left, CharSequence right, final int threshold) {
         if (left == null || right == null) {
@@ -235,8 +179,12 @@ public class StringUtils {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
             int id = (int) (Math.random() * 62) + 48;
-            if (id >= 58) id += 7;
-            if (id >= 91) id += 6;
+            if (id >= 58) {
+                id += 7;
+            }
+            if (id >= 91) {
+                id += 6;
+            }
             sb.append((char) id);
         }
         return sb.toString();
@@ -259,7 +207,7 @@ public class StringUtils {
         if (s == null) {
             return null;
         }
-        String s2 = s.toString();
+        final String s2 = s.toString();
         if (isEmpty(s2) || (start == 0 && s.length() <= end)) {
             return s2;
         } else {
