@@ -1,12 +1,8 @@
 [versions]
-# Gradle Plugin
-gradle-versions = "0.51.0"
-jmh-pl = "0.7.3"
-
 # App deps
 lombok = "1.18.38"
 gson = "2.12.1"
-slf4j = "2.0.17"
+slf4j = "2.1.0-alpha1"
 jetbrains-annotation = "26.0.2"
 
 # Test Modules
@@ -15,13 +11,12 @@ junit-jupiter = "5.13.0-M3"
 # JMH Libraries
 jmh-lib = "1.37"
 
+#Gradle Plugin
+gradle-versions = "0.52.0"
+jmh-pl = "0.7.3"
 
 
 [libraries]
-#Gradle Plugin
-gradle-versions = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "gradle-versions" }
-jmh-pl = { module = "me.champeau.jmh:me.champeau.jmh.gradle.plugin", version.ref = "jmh-pl" }
-
 #App deps
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -36,3 +31,8 @@ junit-platform = { module = "org.junit.platform:junit-platform-launcher" }
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh-lib" }
 jmh-apt = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh-lib" }
 jmh-bytecode = { module = "org.openjdk.jmh:jmh-generator-bytecode", version.ref = "jmh-lib" }
+
+#Gradle Plugin
+gradle-versions = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "gradle-versions" }
+jmh-pl = { module = "me.champeau.jmh:me.champeau.jmh.gradle.plugin", version.ref = "jmh-pl" }
+
