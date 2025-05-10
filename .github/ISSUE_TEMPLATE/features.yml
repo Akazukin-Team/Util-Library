@@ -7,7 +7,7 @@ body:
     attributes:
       label: Basic Questions
       description: |-
-        Please confirm you've gone through the following steps before submitting your feature suggestion.  
+        Please confirm you've gone through the following steps before submitting your feature suggestion.
         If you believe an item does not apply to your issue, you may check the box regardless.
       options:
         - label: I have checked and confirmed that no similar issues exist, and my issue is not a duplicate (including closed issues).
