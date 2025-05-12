@@ -6,6 +6,10 @@ plugins {
     id 'buildlogic.java-jmh-conventions'
 }
 
+dependencies {
+    compileOnly libs.akz.annotation.marker
+}
+
 tasks.withType(AbstractPublishToMaven).configureEach {
     dependsOn("jar")
 }
