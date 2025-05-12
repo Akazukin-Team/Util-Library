@@ -1,6 +1,6 @@
 package org.akazukin.util.object;
 
-import org.akazukin.util.annotation.NonThreadSafe;
+import org.akazukin.annotation.marker.NonThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;

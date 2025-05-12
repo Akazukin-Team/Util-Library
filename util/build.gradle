@@ -5,3 +5,7 @@ plugins {
     id 'buildlogic.java-test-conventions'
     id 'buildlogic.java-jmh-conventions'
 }
+
+dependencies {
+    compileOnly libs.akz.annotation.marker
+}
