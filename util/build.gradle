@@ -5,15 +5,3 @@ plugins {
     id 'buildlogic.java-test-conventions'
     id 'buildlogic.java-jmh-conventions'
 }
-
-tasks.withType(AbstractPublishToMaven).configureEach {
-    dependsOn("jar")
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
-}
