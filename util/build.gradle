@@ -9,15 +9,3 @@ plugins {
 dependencies {
     compileOnly libs.akz.annotation.marker
 }
-
-tasks.withType(AbstractPublishToMaven).configureEach {
-    dependsOn("jar")
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
-}
