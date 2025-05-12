@@ -1,8 +1,8 @@
 package org.akazukin.util.utils.http;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.akazukin.util.utils.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -69,9 +69,9 @@ public class HttpUtils {
      * @throws IOException        if an I/O error occurs during request or response handling.
      * @throws URISyntaxException if the provided URL is malformed or uses an unsupported protocol.
      */
-    public HttpResponse request(@NonNull final String url,
+    public HttpResponse request(@NotNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
-                                @NonNull final HttpMethod method)
+                                @NotNull final HttpMethod method)
             throws IOException, URISyntaxException {
         return request(url, header, body, method, DEFAULT_CONFIG);
     }
@@ -100,10 +100,10 @@ public class HttpUtils {
      * @throws IOException        if an I/O exception occurs during the request or response handling.
      * @throws URISyntaxException if the provided URL is invalid or the protocol is not supported.
      */
-    public HttpResponse request(@NonNull final String url,
+    public HttpResponse request(@NotNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
-                                @NonNull final HttpMethod method,
-                                @NonNull final HttpConfig config)
+                                @NotNull final HttpMethod method,
+                                @NotNull final HttpConfig config)
             throws IOException, URISyntaxException {
         HttpURLConnection con = null;
         try {

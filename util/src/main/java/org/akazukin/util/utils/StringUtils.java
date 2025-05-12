@@ -1,6 +1,5 @@
 package org.akazukin.util.utils;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -161,8 +160,8 @@ public class StringUtils {
         return p[n];
     }
 
-    @NonNull
-    public static String toSHA(@NonNull final CharSequence s) {
+    @NotNull
+    public static String toSHA(@NotNull final CharSequence s) {
         final byte[] bytes = s.toString().getBytes(StandardCharsets.UTF_8);
         final byte[] result = StringUtils.sha3_512.digest(bytes);
 
@@ -174,7 +173,7 @@ public class StringUtils {
         return s != null ? s.toString() : "";
     }
 
-    @NonNull
+    @NotNull
     public static String randomString(final int length) {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
