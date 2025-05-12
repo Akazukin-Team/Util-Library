@@ -1,7 +1,7 @@
 package org.akazukin.util.utils;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public class ListUtils {
      * @throws IllegalArgumentException if {@code size} is not a positive integer
      */
     @SuppressWarnings("unchecked")
-    public <T> List<T>[] split(@NonNull final List<T> list, final int size) {
+    public <T> List<T>[] split(@NotNull final List<T> list, final int size) {
         if (size <= 0) {
             throw new IllegalArgumentException(ListUtils.SIZE_NOT_POSITIVE);
         }
@@ -110,8 +110,8 @@ public class ListUtils {
      *                  will be called to get its string representation. Must not be null.
      * @return a single string containing all elements of the list, separated by the specified delimiter.
      */
-    @NonNull
-    public String join(@NonNull final String character, @NonNull final Collection<?> list) {
+    @NotNull
+    public String join(@NotNull final String character, @NotNull final Collection<?> list) {
         return list.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(character));
@@ -124,7 +124,7 @@ public class ListUtils {
      * @param list a list of elements from which a random element is selected; must not be null
      * @return a randomly selected element from the provided list
      */
-    public <T> T getByRandom(@NonNull final List<T> list) {
+    public <T> T getByRandom(@NotNull final List<T> list) {
         return list.get(((Double) (Math.random() * list.size())).intValue());
     }
 }
