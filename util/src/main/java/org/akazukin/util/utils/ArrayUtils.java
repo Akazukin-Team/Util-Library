@@ -15,14 +15,20 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ArrayUtils {
     /**
-     * Concatenate multiple arrays into one.
+     * Concatenates multiple arrays of the same type into a single array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
      *
-     * @param arrays the arrays to concatenate
-     * @param <T>    the type of the elements in the arrays
-     * @return the concatenated array
+     * @param <T>    the type of the array elements
+     * @param arrays a variable number of input arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty array will be returned.
+     * Must not be {@code null}.
      */
     @SuppressWarnings("unchecked")
-    public <T> T[] concat(final T[]... arrays) {
+    @NotNull
+    public <T> T[] concat(@NotNull final T[]... arrays) {
         final Class<T> type1 = (Class<T>) arrays.getClass().getComponentType().getComponentType();
 
         int len = 0;
@@ -34,6 +40,230 @@ public class ArrayUtils {
 
         int pos = 0;
         for (final T[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple byte arrays into a single byte array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input byte arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single byte array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty byte array will be returned.
+     * Must not be {@code null}.
+     */
+    public byte[] concat(final byte[]... arrays) {
+        int len = 0;
+        for (final byte[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final byte[] res = new byte[len];
+
+        int pos = 0;
+        for (final byte[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple char arrays into a single char array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input char arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single char array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty char array will be returned.
+     * Must not be {@code null}.
+     */
+    public char[] concat(final char[]... arrays) {
+        int len = 0;
+        for (final char[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final char[] res = new char[len];
+
+        int pos = 0;
+        for (final char[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple short arrays into a single short array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input short arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single short array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty short array will be returned.
+     * Must not be {@code null}.
+     */
+    public short[] concat(final short[]... arrays) {
+        int len = 0;
+        for (final short[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final short[] res = new short[len];
+
+        int pos = 0;
+        for (final short[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple boolean arrays into a single boolean array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input boolean arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single boolean array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty boolean array will be returned.
+     * Must not be {@code null}.
+     */
+    public boolean[] concat(final boolean[]... arrays) {
+        int len = 0;
+        for (final boolean[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final boolean[] res = new boolean[len];
+
+        int pos = 0;
+        for (final boolean[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple float arrays into a single float array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input float arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single float array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty float array will be returned.
+     * Must not be {@code null}.
+     */
+    public float[] concat(final float[]... arrays) {
+        int len = 0;
+        for (final float[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final float[] res = new float[len];
+
+        int pos = 0;
+        for (final float[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple double arrays into a single double array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input double arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single double array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty double array will be returned.
+     * Must not be {@code null}.
+     */
+    public double[] concat(final double[]... arrays) {
+        int len = 0;
+        for (final double[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final double[] res = new double[len];
+
+        int pos = 0;
+        for (final double[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple long arrays into a single long array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input long arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single long array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty long array will be returned.
+     * Must not be {@code null}.
+     */
+    public long[] concat(@NotNull final long[]... arrays) {
+        int len = 0;
+        for (final long[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final long[] res = new long[len];
+
+        int pos = 0;
+        for (final long[] ts : arrays) {
+            System.arraycopy(ts, 0, res, pos, ts.length);
+            pos += ts.length;
+        }
+
+        return res;
+    }
+
+    /**
+     * Concatenates multiple int arrays into a single int array.
+     * The order of elements is preserved, with elements from earlier arrays
+     * placed before those of later arrays.
+     *
+     * @param arrays a variable number of input int arrays to concatenate.
+     *               Each array must not be {@code null}.
+     * @return a single int array containing all elements from the provided arrays in order.
+     * If no arrays are provided, an empty int array will be returned.
+     * Must not be {@code null}.
+     */
+    public int[] concat(final int[]... arrays) {
+        int len = 0;
+        for (final int[] ts : arrays) {
+            len += ts.length;
+        }
+
+        final int[] res = new int[len];
+
+        int pos = 0;
+        for (final int[] ts : arrays) {
             System.arraycopy(ts, 0, res, pos, ts.length);
             pos += ts.length;
         }
