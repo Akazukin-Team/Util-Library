@@ -29,14 +29,13 @@ public class ArrayUtils {
     @SuppressWarnings("unchecked")
     @NotNull
     public <T> T[] concat(@NotNull final T[]... arrays) {
-        final Class<T> type1 = (Class<T>) arrays.getClass().getComponentType().getComponentType();
-
         int len = 0;
         for (final T[] ts : arrays) {
             len += ts.length;
         }
 
-        final T[] res = (T[]) Array.newInstance(type1, len);
+        final Class<T> type = (Class<T>) arrays.getClass().getComponentType().getComponentType();
+        final T[] res = (T[]) Array.newInstance(type, len);
 
         int pos = 0;
         for (final T[] ts : arrays) {
@@ -58,7 +57,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty byte array will be returned.
      * Must not be {@code null}.
      */
-    public byte[] concat(final byte[]... arrays) {
+    @NotNull
+    public byte[] concat(@NotNull final byte[]... arrays) {
         int len = 0;
         for (final byte[] ts : arrays) {
             len += ts.length;
@@ -86,7 +86,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty char array will be returned.
      * Must not be {@code null}.
      */
-    public char[] concat(final char[]... arrays) {
+    @NotNull
+    public char[] concat(@NotNull final char[]... arrays) {
         int len = 0;
         for (final char[] ts : arrays) {
             len += ts.length;
@@ -114,7 +115,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty short array will be returned.
      * Must not be {@code null}.
      */
-    public short[] concat(final short[]... arrays) {
+    @NotNull
+    public short[] concat(@NotNull final short[]... arrays) {
         int len = 0;
         for (final short[] ts : arrays) {
             len += ts.length;
@@ -142,7 +144,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty boolean array will be returned.
      * Must not be {@code null}.
      */
-    public boolean[] concat(final boolean[]... arrays) {
+    @NotNull
+    public boolean[] concat(@NotNull final boolean[]... arrays) {
         int len = 0;
         for (final boolean[] ts : arrays) {
             len += ts.length;
@@ -170,6 +173,7 @@ public class ArrayUtils {
      * If no arrays are provided, an empty float array will be returned.
      * Must not be {@code null}.
      */
+    @NotNull
     public float[] concat(final float[]... arrays) {
         int len = 0;
         for (final float[] ts : arrays) {
@@ -198,7 +202,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty double array will be returned.
      * Must not be {@code null}.
      */
-    public double[] concat(final double[]... arrays) {
+    @NotNull
+    public double[] concat(@NotNull final double[]... arrays) {
         int len = 0;
         for (final double[] ts : arrays) {
             len += ts.length;
@@ -226,6 +231,7 @@ public class ArrayUtils {
      * If no arrays are provided, an empty long array will be returned.
      * Must not be {@code null}.
      */
+    @NotNull
     public long[] concat(@NotNull final long[]... arrays) {
         int len = 0;
         for (final long[] ts : arrays) {
@@ -254,7 +260,8 @@ public class ArrayUtils {
      * If no arrays are provided, an empty int array will be returned.
      * Must not be {@code null}.
      */
-    public int[] concat(final int[]... arrays) {
+    @NotNull
+    public int[] concat(@NotNull final int[]... arrays) {
         int len = 0;
         for (final int[] ts : arrays) {
             len += ts.length;
@@ -395,11 +402,11 @@ public class ArrayUtils {
     /**
      * Selects and returns a random element from the provided array.
      *
-     * @param <T>  the type of the elements in the array
-     * @param list an array of elements from which a random element is selected; must not be null
+     * @param <T> the type of the elements in the array
+     * @param arr an array of elements from which a random element is selected; must not be null
      * @return a randomly selected element from the provided array
      */
-    public <T> T getByRandom(@NotNull final T[] list) {
-        return list[((Double) (Math.random() * list.length)).intValue()];
+    public <T> T getByRandom(@NotNull final T[] arr) {
+        return arr[((Double) (Math.random() * arr.length)).intValue()];
     }
 }
