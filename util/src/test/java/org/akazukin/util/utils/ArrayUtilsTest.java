@@ -36,6 +36,15 @@ public class ArrayUtilsTest {
     }
 
     @Test
+    public void testConcatWithNullByteArrays() {
+        final byte[] a = {1, 2};
+        final byte[] nullArray = null;
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> ArrayUtils.concat(a, nullArray));
+    }
+
+    @Test
     public void testConcatByteArrays() {
         final byte[] a = {1, 2};
         final byte[] b = {3};
