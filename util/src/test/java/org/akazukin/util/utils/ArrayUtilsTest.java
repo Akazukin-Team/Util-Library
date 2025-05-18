@@ -38,7 +38,7 @@ public class ArrayUtilsTest {
     @Test
     public void testConcatWithNullByte() {
         Assertions.assertThrows(NullPointerException.class,
-                () -> ArrayUtils.concat((byte[]) null), ArrayUtils.EX_ARRAY_NULL);
+                () -> ArrayUtils.concat((byte[]) null));
     }
 
     @Test

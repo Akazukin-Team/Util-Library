@@ -1,7 +1,10 @@
 package org.akazukin.util.utils;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ArrayUtils {
     public static final String EX_ARRAY_NULL = "Array must not be null";
+    public static final String EX_SIZE_NEGATIVE = "The size of array must be positive";
 
     /**
      * Concatenates multiple arrays of the same type into a single array.
@@ -31,14 +35,10 @@ public class ArrayUtils {
      */
     @SuppressWarnings("unchecked")
     @NotNull
-    public <T> T[] concat(@NotNull final T[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public <T> T[] concat(@NonNull final T[]... arr) {
         int len = 0;
         for (final T[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -70,14 +70,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public byte[] concat(@NotNull final byte[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public byte[] concat(@NonNull final byte[]... arr) {
         int len = 0;
         for (final byte[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -108,14 +104,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public char[] concat(@NotNull final char[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public char[] concat(@NonNull final char[]... arr) {
         int len = 0;
         for (final char[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -146,14 +138,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public short[] concat(@NotNull final short[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public short[] concat(@NonNull final short[]... arr) {
         int len = 0;
         for (final short[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -184,14 +172,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public boolean[] concat(@NotNull final boolean[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public boolean[] concat(@NonNull final boolean[]... arr) {
         int len = 0;
         for (final boolean[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -222,14 +206,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public float[] concat(@NotNull final float[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public float[] concat(@NonNull final float[]... arr) {
         int len = 0;
         for (final float[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -260,14 +240,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public double[] concat(@NotNull final double[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public double[] concat(@NonNull final double[]... arr) {
         int len = 0;
         for (final double[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -298,14 +274,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public long[] concat(@NotNull final long[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public long[] concat(@NonNull final long[]... arr) {
         int len = 0;
         for (final long[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -336,14 +308,10 @@ public class ArrayUtils {
      * @throws NullPointerException if {@code arr} or any of the provided arrays is null.
      */
     @NotNull
-    public int[] concat(@NotNull final int[]... arr) {
-        if (null == arr) {
-            throw new NullPointerException(EX_ARRAY_NULL);
-        }
-
+    public int[] concat(@NonNull final int[]... arr) {
         int len = 0;
         for (final int[] subArr : arr) {
-            if (null == subArr) {
+            if (subArr == null) {
                 throw new NullPointerException(EX_ARRAY_NULL);
             }
 
@@ -386,7 +354,8 @@ public class ArrayUtils {
      * @param clazz the {@link Class} of the type to create arrays for
      * @return an {@link IntFunction} that generates arrays of the specified type and size
      */
-    public <T> IntFunction<T[]> collectToArray(final Class<T> clazz) {
+    @NotNull
+    public <T> IntFunction<T[]> collectToArray(@NonNull final Class<T> clazz) {
         return size -> getNewArray(clazz, size);
     }
 
@@ -401,7 +370,8 @@ public class ArrayUtils {
      * @throws NegativeArraySizeException if the {@code size} parameter is negative
      */
     @SuppressWarnings("unchecked")
-    public <T> T[] getNewArray(final Class<T> type, final int size) {
+    @NotNull
+    public <T> T[] getNewArray(@NonNull final Class<T> type, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         return (T[]) Array.newInstance(type, size);
     }
 
@@ -409,32 +379,39 @@ public class ArrayUtils {
      * Splits a given array into smaller subarrays of a specified size.
      * Each subarray preserves the order of elements from the original array.
      *
-     * @param array the array to be split; must not be null
-     * @param size  the size of each subarray; must be a positive integer
-     * @param <T>   the type of elements in the array
-     * @return a 2-dimensional array where each subarray contains at most {@code size} elements
-     * @throws IllegalArgumentException if {@code size} is not a positive integer
+     * @param arr  the array to be split.
+     *             must not be {@code null}.
+     * @param size the size of each subarray.
+     *             must be a positive integer.
+     * @param <T>  the type of elements in the array.
+     * @return a 2-dimensional array where each subarray contains at most {@code size} elements.
+     * @throws IllegalArgumentException if {@code size} is not a positive integer.
      */
     @SuppressWarnings("unchecked")
-    public <T> T[][] split(@NotNull final T[] array, final int size) {
+    @NotNull
+    public <T> T[][] split(@NonNull final T[] arr, @Range(from = 1, to = Integer.MAX_VALUE) final int size) {
+        if (arr == null) {
+            throw new NullPointerException(EX_ARRAY_NULL);
+        }
         if (0 >= size) {
-            throw new IllegalArgumentException(ListUtils.SIZE_NOT_POSITIVE);
+            throw new IllegalArgumentException(EX_SIZE_NEGATIVE);
         }
 
-        final Class<T> type = (Class<T>) array.getClass().getComponentType();
-        final T[][] arr = getNewArray(getArrayClass(type), MathUtils.divisionWithCarry(array.length, size));
+
+        final Class<T> type = (Class<T>) arr.getClass().getComponentType();
+        final T[][] res = getNewArray(getArrayClass(type), MathUtils.divisionWithCarry(arr.length, size));
         int pos = 0;
         int index = 0;
         while (0 < size - pos) {
-            final int len = Math.min(size, array.length - pos);
+            final int len = Math.min(size, arr.length - pos);
 
-            arr[index] = copyOfRange(array, pos, len);
+            res[index] = copyOfRange(arr, pos, len);
 
             index++;
             pos += len;
         }
 
-        return arr;
+        return res;
     }
 
     /**
@@ -442,23 +419,25 @@ public class ArrayUtils {
      * from the provided array.
      * The range is determined from the given start index and the specified length.
      *
-     * @param <T>    the type of the elements in the array
-     * @param array  the original array from which elements are to be copied
-     * @param index  the starting index (inclusive) from which the copying begins
-     * @param length the number of elements to copy
-     * @return a new array containing the specified range of elements from the original array
+     * @param <T>    the type of the elements in the array.
+     * @param array  the original array from which elements are to be copied.
+     * @param index  the starting index (inclusive) from which the copying begins.
+     * @param length the number of elements to copy.
+     * @return a new array containing the specified range of elements from the original array.
+     * Must not be {@code null}.
      * @throws ArrayIndexOutOfBoundsException if the provided range is invalid,
      *                                        such as when the starting index is negative, or the range exceeds
-     *                                        the length of the original array
+     *                                        the length of the original array.
      */
-    public <T> T[] copyOfRange(final T[] array, final int index, final int length) {
-        if (0 > index || index + length > array.length) {
+    @NotNull
+    public <T> T[] copyOfRange(@NonNull final T[] array, final int index, final int length) {
+        if (index < 0 || array.length < index + length) {
             throw new ArrayIndexOutOfBoundsException("Invalid range");
         }
 
         @SuppressWarnings("unchecked") final T[] copy =
                 getNewArray((Class<T>) array.getClass().getComponentType(), length);
-        if (0 == length) {
+        if (length == 0) {
             return copy;
         }
 
@@ -468,16 +447,18 @@ public class ArrayUtils {
 
     /**
      * Returns the {@link Class} object representing an array type of the specified class.
-     * For example, if the provided class represents type {@code T}, this method returns
-     * the {@link Class} object for {@code T[]}.
+     * For example, if the provided class represents type {@link T}, this method returns
+     * the {@link Class} object for {@link T[]}.
      *
      * @param <T>   the type of elements in the array
      * @param clazz the {@link Class} object representing the element type of the array;
-     *              must not be null
-     * @return the {@link Class} object representing an array of the specified type
+     *              must not be {@code null}.
+     * @return the {@link Class} object representing an array of the specified type.
+     * Must not be {@code null}.
      * @throws NullPointerException if the {@code clazz} parameter is null
      */
     @SuppressWarnings("unchecked")
+    @NotNull
     public <T> Class<T[]> getArrayClass(final Class<T> clazz) {
         return (Class<T[]>) getNewArray(clazz, 0).getClass();
     }
@@ -486,10 +467,12 @@ public class ArrayUtils {
      * Selects and returns a random element from the provided array.
      *
      * @param <T> the type of the elements in the array
-     * @param arr an array of elements from which a random element is selected; must not be null
+     * @param arr an array of elements from which a random element is selected.
+     *            Must not be {@code null}.
      * @return a randomly selected element from the provided array
      */
-    public <T> T getByRandom(@NotNull final T[] arr) {
-        return arr[((Double) (Math.random() * arr.length)).intValue()];
+    @Nullable
+    public <T> T getByRandom(@NonNull final T[] arr) {
+        return arr[(int) (Math.random() * arr.length)];
     }
 }
