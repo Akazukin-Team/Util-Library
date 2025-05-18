@@ -17,7 +17,7 @@ public class ArrayUtilsTest {
         final String[] nullArray = null;
 
         Assertions.assertThrows(NullPointerException.class,
-                () -> ArrayUtils.concat(a, nullArray));
+                () -> ArrayUtils.concat(a, nullArray), ArrayUtils.EX_ARRAY_NULL);
     }
 
     @Test
@@ -36,12 +36,18 @@ public class ArrayUtilsTest {
     }
 
     @Test
+    public void testConcatWithNullByte() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> ArrayUtils.concat((byte[]) null), ArrayUtils.EX_ARRAY_NULL);
+    }
+
+    @Test
     public void testConcatWithNullByteArrays() {
         final byte[] a = {1, 2};
         final byte[] nullArray = null;
 
         Assertions.assertThrows(NullPointerException.class,
-                () -> ArrayUtils.concat(a, nullArray));
+                () -> ArrayUtils.concat(a, nullArray), ArrayUtils.EX_ARRAY_NULL);
     }
 
     @Test
