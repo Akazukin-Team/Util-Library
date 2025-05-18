@@ -25,7 +25,7 @@ jmh {
     resultFormat = 'CSV'
     threads = 1
     jmhTimeout = '1m'
-    timeUnit = 'ms'
+    timeUnit = 'ns'
 
     warmup = '10s'
     warmupBatchSize = 10
