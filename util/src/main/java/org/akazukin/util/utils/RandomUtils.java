@@ -254,6 +254,7 @@ public class RandomUtils {
     /**
      * Selects a random element from the provided array of {@link CharSequence} objects.
      *
+     * @param <T>   the type of elements in the input and output array.
      * @param chars the array of {@link CharSequence} elements to select from.
      *              This must not be {@code null} or empty.
      * @return a randomly selected element from the input array.
@@ -268,6 +269,7 @@ public class RandomUtils {
      * Generates a random string of the specified length using the provided array of characters.
      * Each character in the resulting string is selected randomly from the input array.
      *
+     * @param <T>    the type of elements in the input array.
      * @param chars  the array of {@link T} elements from which characters will be randomly selected.
      *               This must not be {@code null}.
      * @param length the desired length of the generated string.
