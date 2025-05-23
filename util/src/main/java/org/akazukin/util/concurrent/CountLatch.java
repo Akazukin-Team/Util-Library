@@ -2,6 +2,7 @@ package org.akazukin.util.concurrent;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.akazukin.annotation.marker.ThreadSafe;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
@@ -23,6 +24,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * Once the count reaches zero, the latch does not reset and all later invocations of
  * {@link CountLatch#await()} return immediately.
  */
+@ThreadSafe
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class CountLatch {
     final Sync sync;

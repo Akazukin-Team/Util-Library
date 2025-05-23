@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ListUtils {
     public static final List[] EMPTY_LIST = {};
-    public static final String SIZE_NOT_POSITIVE = "size must be positive";
+    public static final String EX_SIZE_NEGATIVE = "The size of list must be positive";
 
-    public static final String SRC_POS_IS_NEGATIVE = "srcPos is negative";
-    public static final String DEST_POS_IS_NEGATIVE = "destPos is negative";
-    public static final String LENGTH_IS_NEGATIVE = "length is negative";
+    public static final String EX_SRC_POS_NEGATIVE = "srcPos is negative";
+    public static final String EX_DEST_POS_NEGATIVE = "destPos is negative";
+    public static final String EX_LENGTH_NEGATIVE = "length is negative";
 
     /**
      * Splits the given list into smaller sublists of the specified size.
@@ -31,7 +31,7 @@ public class ListUtils {
     @SuppressWarnings("unchecked")
     public <T> List<T>[] split(@NotNull final List<T> list, final int size) {
         if (size <= 0) {
-            throw new IllegalArgumentException(ListUtils.SIZE_NOT_POSITIVE);
+            throw new IllegalArgumentException(ListUtils.EX_SIZE_NEGATIVE);
         }
 
         if (list.isEmpty()) {
@@ -64,40 +64,38 @@ public class ListUtils {
      * specifying the starting position and the number of elements to copy for both
      * the source and the destination lists.
      *
-     * @param src     the source object to copy elements from, must be a {@code List}
-     * @param srcPos  the starting position in the source list
-     * @param dest    the destination object to copy elements to, must be a {@code List}
-     * @param destPos the starting position in the destination list
-     * @param length  the number of elements to copy
+     * @param src     the source list to copy elements from.
+     * @param srcPos  the starting position in the source list.
+     * @param dest    the destination list to copy elements to.
+     * @param destPos the starting position in the destination list.
+     * @param length  the number of elements to copy.
      * @throws IndexOutOfBoundsException if {@code srcPos}, {@code destPos}, or {@code length} is negative,
      *                                   or if the range specified by {@code srcPos} and {@code length} exceeds
      *                                   the size of the source list, or if the range specified by {@code destPos}
-     *                                   and {@code length} exceeds the size of the destination list
-     * @throws ClassCastException        if either {@code src} or {@code dest} is not a {@code List}
+     *                                   and {@code length} exceeds the size of the destination list.
      */
-    public void listCopy(final Object src, final int srcPos, final Object dest, final int destPos, final int length) throws IndexOutOfBoundsException, ClassCastException {
+    @SuppressWarnings("unchecked,rawtypes")
+    public void listCopy(final List src, final int srcPos, final List dest, final int destPos, final int length) throws IndexOutOfBoundsException {
         if (srcPos < 0) {
-            throw new IndexOutOfBoundsException(SRC_POS_IS_NEGATIVE);
+            throw new IndexOutOfBoundsException(EX_SRC_POS_NEGATIVE);
         }
         if (destPos < 0) {
-            throw new IndexOutOfBoundsException(DEST_POS_IS_NEGATIVE);
+            throw new IndexOutOfBoundsException(EX_DEST_POS_NEGATIVE);
         }
         if (length < 0) {
-            throw new IndexOutOfBoundsException(LENGTH_IS_NEGATIVE);
+            throw new IndexOutOfBoundsException(EX_LENGTH_NEGATIVE);
         }
 
-        final List listSrc = (List) src;
-        final List listDest = (List) dest;
-        if (srcPos + length > listSrc.size()) {
+        if (srcPos + length > src.size()) {
             throw new IndexOutOfBoundsException("The sum of srcPos and length is greater than src length");
         }
-        if (destPos + length > listDest.size()) {
+        if (destPos + length > dest.size()) {
             throw new IndexOutOfBoundsException("The sum of destPos and length is greater than dest length");
         }
 
 
         for (int i = 0; i < length; i++) {
-            listDest.set(destPos + i, listSrc.get(srcPos + i));
+            dest.set(destPos + i, src.get(srcPos + i));
         }
     }
 
@@ -125,6 +123,6 @@ public class ListUtils {
      * @return a randomly selected element from the provided list
      */
     public <T> T getByRandom(@NotNull final List<T> list) {
-        return list.get(((Double) (Math.random() * list.size())).intValue());
+        return list.get((int) (Math.random() * list.size()));
     }
 }

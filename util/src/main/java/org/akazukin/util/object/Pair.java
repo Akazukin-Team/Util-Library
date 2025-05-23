@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.util.annotation.NonThreadSafe;
+import org.akazukin.annotation.marker.NonThreadSafe;
 
 /**
  * Represents a generic pair of key and value.

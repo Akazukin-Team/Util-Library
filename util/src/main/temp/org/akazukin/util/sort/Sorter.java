@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,18 +27,18 @@ final class Main {
     public static void main(final String... args) {
         Sorter.mergeSort(Arrays.asList(new ClazzA(1), new ClazzA(2)),
                 new Comparator<ClazzA>() {
-                          @Override
-                          public int compare(final ClazzA a, final ClazzA b) {
-                              if (a.getI() > b.getI()) {
-                                  return 1;
-                              } else if (a.getI() < b.getI()) {
-                                  return -1;
-                              } else {
-                                  return 0;
-                              }
-                          }
-                      }
-                ))
+                    @Override
+                    public int compare(final ClazzA a, final ClazzA b) {
+                        if (a.getI() > b.getI()) {
+                            return 1;
+                        } else if (a.getI() < b.getI()) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
+        ))
         Arrays.asList(new ClazzA(1), new ClazzA(2))
                 .sort(new Comparator<ClazzA>() {
                           @Override

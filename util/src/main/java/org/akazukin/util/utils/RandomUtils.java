@@ -1,10 +1,30 @@
 package org.akazukin.util.utils;
 
-import java.util.Random;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
-public class RandomUtils extends Random {
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class RandomUtils {
     private static final String BadBound = "bound must be positive";
     private static final long serialVersionUID = -2560973338619712162L;
+
+    Random random;
+
+    /**
+     * Constructs an instance of {@link RandomUtils} using the specified {@link Random} instance.
+     * This constructor allows the randomness source for the utility methods to be customized.
+     *
+     * @param random the {@link Random} instance used as the source of randomness.
+     *               Must not be {@code null}.
+     */
+    public RandomUtils(@NotNull final Random random) {
+        this.random = random;
+    }
 
     /**
      * Generates a random float value constrained between two provided float values.
@@ -24,7 +44,7 @@ public class RandomUtils extends Random {
         final float max = Math.max(f1, f2);
         final float min = Math.min(f1, f2);
 
-        final float rdm = this.nextFloat();
+        final float rdm = this.random.nextFloat();
 
         // 大体半分の値からランダムの値を作る(オーバーフロー対策)
         final float leftDiff = (max / 2) - (min / 2);
@@ -79,7 +99,7 @@ public class RandomUtils extends Random {
         final int leftDiff = (max / 2) - (min / 2);
         final int rightDiff = max - (min + leftDiff);
 
-        return min + this.nextInt(leftDiff) + this.nextInt(rightDiff);
+        return min + this.random.nextInt(leftDiff) + this.random.nextInt(rightDiff);
     }
 
     /**
@@ -100,7 +120,7 @@ public class RandomUtils extends Random {
         final double max = Math.max(d1, d2);
         final double min = Math.min(d1, d2);
 
-        final double rdm = this.nextDouble();
+        final double rdm = this.random.nextDouble();
 
         // 大体半分の値からランダムの値を作る(オーバーフロー対策)
         final double leftDiff = (max / 2) - (min / 2);
@@ -143,17 +163,22 @@ public class RandomUtils extends Random {
     /**
      * Generates a random long value constrained between 0 (inclusive) and the specified {@code bound} (exclusive).
      * The method ensures the generated value is within the range [0, bound].
+     * If {@code random} is an instance of {@link ThreadLocalRandom}, it uses the {@link ThreadLocalRandom#nextLong(long)} method.
      *
      * @param bound the upper bound (exclusive) for the generated random value. Must be positive.
      * @return a random long value between 0 (inclusive) and {@code bound} (exclusive).
      * @throws IllegalArgumentException if {@code bound} is less than or equal to 0.
      */
     public long nextLong(final long bound) {
+        if (this.random instanceof ThreadLocalRandom) {
+            ((ThreadLocalRandom) this.random).nextLong(bound);
+        }
+
         if (bound <= 0L) {
             throw new IllegalArgumentException(BadBound);
         }
 
-        long r = this.nextLong();
+        long r = this.random.nextLong();
         final long m = bound - 1L;
 
         if ((bound & m) == 0L) {
@@ -161,9 +186,102 @@ public class RandomUtils extends Random {
         } else {
             for (long u = r >>> 1;
                  u + m - (r = u % bound) < 0;
-                 u = this.nextLong() >>> 1) {
+                 u = this.random.nextLong() >>> 1) {
             }
         }
         return r;
+    }
+
+    /**
+     * Selects a random character from the provided string.
+     *
+     * @param str the string containing characters to select from.
+     *            Must not be {@code null} or empty.
+     * @return a randomly selected character from the input string.
+     * The method may throw an exception if the input string is empty.
+     */
+    public char nextChar(@NotNull final String str) {
+        return this.nextChar(str.toCharArray());
+    }
+
+    /**
+     * Selects a random character from the provided array of characters.
+     *
+     * @param chars the array of characters to select from.
+     *              This must not be {@code null} or empty.
+     * @return a randomly selected character from the input array.
+     * If the array is empty, the method may throw an exception, subject to implementation details.
+     */
+    public char nextChar(final char[] chars) {
+        return chars[this.nextInt(0, chars.length - 1)];
+    }
+
+    /**
+     * Generates a random string of the specified length using characters from the input string.
+     * Each character in the resulting string is randomly selected from the input string.
+     *
+     * @param str    the input string containing characters to be used for generating the random string.
+     *               Must not be {@code null}.
+     * @param length the desired length of the random string to be generated.
+     *               Must be a non-negative value.
+     * @return a randomly generated string of the specified length, composed of characters from the input string.
+     * If the length is zero, an empty string is returned.
+     * This method internally delegates to {@link #nextChar(char[], int)} by converting the input string to a character array.
+     */
+    public String nextChar(@NotNull final String str, @Range(from = 0, to = Integer.MAX_VALUE) final int length) {
+        return this.nextChar(str.toCharArray(), length);
+    }
+
+    /**
+     * Generates a random string of the specified length using the provided array of characters.
+     * Each character in the resulting string is selected randomly from the input array.
+     *
+     * @param chars  the array of characters to be used for generating the random string.
+     *               This must not be {@code null}.
+     * @param length the desired length of the random string to be generated.
+     *               Must be a non-negative value.
+     * @return a randomly generated string of the specified length, composed of characters from the input array.
+     * If the input array is empty or the length is zero, an empty string is returned.
+     */
+    public String nextChar(final char[] chars, @Range(from = 0, to = Integer.MAX_VALUE) final int length) {
+        final StringBuilder str = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            str.append(chars[this.nextInt(0, chars.length - 1)]);
+        }
+        return str.toString();
+    }
+
+    /**
+     * Selects a random element from the provided array of {@link CharSequence} objects.
+     *
+     * @param <T>   the type of elements in the input and output array.
+     * @param chars the array of {@link CharSequence} elements to select from.
+     *              This must not be {@code null} or empty.
+     * @return a randomly selected element from the input array.
+     * The returned element is of type {@link T}.
+     * @throws IllegalArgumentException if {@code chars} is empty.
+     */
+    public <T extends CharSequence> T nextChar(@NotNull final T[] chars) {
+        return chars[this.nextInt(0, chars.length - 1)];
+    }
+
+    /**
+     * Generates a random string of the specified length using the provided array of characters.
+     * Each character in the resulting string is selected randomly from the input array.
+     *
+     * @param <T>    the type of elements in the input array.
+     * @param chars  the array of {@link T} elements from which characters will be randomly selected.
+     *               This must not be {@code null}.
+     * @param length the desired length of the generated string.
+     *               Must be non-negative.
+     * @return a randomly generated string of the specified length, composed of characters from the input array.
+     * If the length is zero, an empty string is returned.
+     */
+    public <T extends CharSequence> String nextChar(@NotNull final T[] chars, @Range(from = 0, to = Integer.MAX_VALUE) final int length) {
+        final StringBuilder str = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            str.append(chars[this.nextInt(0, chars.length - 1)]);
+        }
+        return str.toString();
     }
 }

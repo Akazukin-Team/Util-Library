@@ -3,7 +3,7 @@ package org.akazukin.util.utils;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.util.annotation.ThreadSafe;
+import org.akazukin.annotation.marker.ThreadSafe;
 import org.akazukin.util.object.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

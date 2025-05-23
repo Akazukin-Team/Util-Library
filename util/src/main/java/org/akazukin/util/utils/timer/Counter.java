@@ -10,7 +10,7 @@ import org.akazukin.util.interfaces.Resettable;
 public final class Counter implements Resettable {
     @Getter
     @Setter
-    int count = 0;
+    int count;
 
     public void count() {
         this.count++;

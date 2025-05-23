@@ -155,7 +155,7 @@ public class FileUtils {
      */
     @Deprecated
     public static String getBaseFileName(final String fileName) {
-        final int index = fileName.lastIndexOf(".");
+        final int index = fileName.lastIndexOf('.');
         if (index == -1) {
             return fileName;
         }

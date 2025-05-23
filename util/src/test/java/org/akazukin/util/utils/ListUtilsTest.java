@@ -114,7 +114,7 @@ class ListUtilsTest {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, -1));
 
-        Assertions.assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
+        Assertions.assertEquals(ListUtils.EX_SIZE_NEGATIVE, exception.getMessage());
     }
 
     @Test
@@ -124,6 +124,6 @@ class ListUtilsTest {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> ListUtils.split(list, 0));
 
-        Assertions.assertEquals(ListUtils.SIZE_NOT_POSITIVE, exception.getMessage());
+        Assertions.assertEquals(ListUtils.EX_SIZE_NEGATIVE, exception.getMessage());
     }
 }
