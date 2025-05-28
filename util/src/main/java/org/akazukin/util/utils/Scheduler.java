@@ -25,6 +25,9 @@ import java.util.function.Consumer;
  * various scheduling and cancellation methods. It provides mechanisms
  * to handle exceptions during task execution via a configurable consumer.
  * The Scheduler also supports graceful shutdown to manage lifecycle effectively.
+ * <p>
+ * The class is thread-safe and can be used concurrently
+ * by multiple threads without the need for synchronization.
  */
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ThreadSafe
@@ -103,31 +106,15 @@ public class Scheduler implements Closeable {
 
     /**
      * Cancels all currently scheduled tasks in the scheduler.
-     * This method iterates through all the identifiers of scheduled tasks
-     * and invokes {@link #cancelTask(long)} for each task, ensuring all tasks
-     * are properly canceled.
+     * Each task will be terminated through its {@link java.util.concurrent.Future#cancel(boolean)} method with a {@code true} parameter.
+     * After cancellation, all tasks will be removed from the task collection.
      * <p>
-     * This method is thread-safe and synchronized to prevent concurrent modifications
-     * to the underlying task storage.
+     * This method is synchronized to ensure thread-safe operation when modifying the task list.
      */
     public synchronized void cancelAllTasks() {
-        this.tasks.keySet().forEach(this::cancelTask);
-    }
-
-    /**
-     * Cancels a scheduled task with the specified unique identifier.
-     * If the task is not found, an {@link IllegalArgumentException} is thrown.
-     *
-     * @param id the unique identifier of the task to be canceled.
-     *           It must match the identifier of a previously scheduled task.
-     * @throws IllegalArgumentException if a task with the specified identifier is not found.
-     */
-    public synchronized void cancelTask(final long id) {
-        final ScheduledFuture<?> task = this.tasks.remove(id);
-        if (task == null) {
-            throw new IllegalArgumentException("Task not found: " + id);
-        }
-        task.cancel(true);
+        this.tasks.values()
+                .forEach(t -> t.cancel(true));
+        this.tasks.clear();
     }
 
     /**
@@ -183,6 +170,22 @@ public class Scheduler implements Closeable {
                     this.timer.schedule(timerTask, delay.toConvert(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS));
         }
         return true;
+    }
+
+    /**
+     * Cancels a scheduled task with the specified unique identifier.
+     * If the task is not found, an {@link IllegalArgumentException} is thrown.
+     *
+     * @param id the unique identifier of the task to be canceled.
+     *           It must match the identifier of a previously scheduled task.
+     * @throws IllegalArgumentException if a task with the specified identifier is not found.
+     */
+    public synchronized void cancelTask(final long id) {
+        final ScheduledFuture<?> task = this.tasks.remove(id);
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found: " + id);
+        }
+        task.cancel(true);
     }
 
     /**
