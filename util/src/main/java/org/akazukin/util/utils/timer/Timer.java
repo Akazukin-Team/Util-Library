@@ -17,10 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class Timer implements Resettable {
-    public static final long NS_MS = 1000000L;
-    public static final long MS_S = 1000L;
-    public static final long NS_S = NS_MS * MS_S;
-
     /**
      * The Time.
      */
