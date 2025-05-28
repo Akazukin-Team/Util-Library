@@ -3,6 +3,9 @@ package org.akazukin.util.utils.timer;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.util.interfaces.Resettable;
+import org.akazukin.util.object.TimeHolder;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * A utility class that provides functionality for tracking elapsed time with support for pausing,
@@ -42,105 +45,51 @@ public final class Timer implements Resettable {
     }
 
     /**
-     * Calculates the total number of seconds that have passed since the timer started or was last reset,
-     * excluding any paused duration.
+     * Checks if the specified time, encapsulated within a {@link TimeHolder}, has passed.
+     * The check compares the remaining time, computed in nanoseconds, against zero.
      *
-     * @return the elapsed time in seconds
+     * @param holder the {@link TimeHolder} containing the time to check.
+     *               Must not be {@code null}.
+     * @return {@code true} if the remaining time is less than or equal to zero,
+     * otherwise {@code false}.
      */
-    public long getPassedSec() {
-        return this.getPassedNs() / Timer.NS_S;
+    public boolean hasPassedTime(final TimeHolder holder) {
+        return this.getLeftTime(holder).toConvert(TimeUnit.NANOSECONDS) <= 0;
     }
 
     /**
-     * Calculates the total number of nanoseconds that have passed since the timer started or was last reset,
-     * excluding any paused duration.
+     * Calculates the remaining time encapsulated in a {@link TimeHolder},
+     * by subtracting the elapsed time from the initial time provided.
      *
-     * @return the elapsed time in nanoseconds
+     * @param holder the {@link TimeHolder} containing the total time to compare against.
+     *               Must not be {@code null}.
+     * @return a {@link TimeHolder} representing the remaining time.
+     * The resulting time is calculated in nanoseconds.
      */
-    public long getPassedNs() {
-        return System.nanoTime() - this.startedTime -
+    public TimeHolder getLeftTime(final TimeHolder holder) {
+        final long passedNs = this.getPassedTime().toConvert(TimeUnit.NANOSECONDS);
+        final long reqNs = holder.toConvert(TimeUnit.NANOSECONDS);
+
+        final TimeHolder res = new TimeHolder();
+        res.addTime(reqNs - passedNs, TimeUnit.NANOSECONDS);
+        return res;
+    }
+
+    /**
+     * Calculates the elapsed time since the {@link Timer} was started or last reset,
+     * subtracting any paused duration, and wraps it in a {@link TimeHolder}.
+     * The time is measured in nanoseconds.
+     *
+     * @return the elapsed time encapsulated within a {@link TimeHolder}.
+     */
+    public TimeHolder getPassedTime() {
+        final long passedNs = System.nanoTime() - this.startedTime -
                 (this.pausedAtTime != -1 ? System.nanoTime() - this.pausedAtTime : 0);
-    }
 
-    /**
-     * Calculates the total number of milliseconds that have passed since the timer started or was last reset,
-     * excluding any paused duration.
-     *
-     * @return the elapsed time in milliseconds
-     */
-    public long getPassedMs() {
-        return this.getPassedNs() / Timer.NS_MS;
+        final TimeHolder holder = new TimeHolder();
+        holder.addTime(passedNs, TimeUnit.NANOSECONDS);
+        return holder;
     }
-
-    /**
-     * Determines if the specified number of milliseconds has passed
-     * since the timer started or was reset.
-     *
-     * @param ms the number of milliseconds to check
-     * @return true if the specified milliseconds have passed, otherwise false
-     */
-    public boolean hasPassedMs(final long ms) {
-        return this.hasPassedNs(ms * Timer.NS_MS);
-    }
-
-    /**
-     * Determines if the specified number of nanoseconds has passed
-     * since the timer started or was reset.
-     *
-     * @param ns the number of nanoseconds to check
-     * @return true if the specified nanoseconds have passed, otherwise false
-     */
-    public boolean hasPassedNs(final long ns) {
-        return this.getLeftNs(ns) <= 0;
-    }
-
-    /**
-     * Calculates the number of nanoseconds remaining until the specified target time.
-     * This method determines the difference between the provided time and the elapsed
-     * nanoseconds since the timer was started or last reset.
-     *
-     * @param ns the target time in nanoseconds
-     * @return the remaining nanoseconds until the target time
-     */
-    public long getLeftNs(final long ns) {
-        return ns - this.getPassedNs();
-    }
-
-    /**
-     * Determines if the specified number of seconds has passed
-     * since the timer started or was reset.
-     *
-     * @param sec the number of seconds to check
-     * @return true if the specified seconds have passed, otherwise false
-     */
-    public boolean hasPassedSec(final long sec) {
-        return this.hasPassedNs(sec * Timer.NS_S);
-    }
-
-    /**
-     * Calculates the number of milliseconds remaining until the specified target time.
-     * This method determines the difference between the provided time and the elapsed
-     * milliseconds since the timer was started or last reset.
-     *
-     * @param ms the target time in milliseconds
-     * @return the remaining milliseconds until the target time
-     */
-    public long getLeftMs(final long ms) {
-        return this.getLeftNs(ms * Timer.NS_MS) / Timer.NS_MS;
-    }
-
-    /**
-     * Calculates the number of seconds remaining until the specified target time.
-     * This method determines the difference between the provided time and the elapsed
-     * seconds since the timer was started or last reset.
-     *
-     * @param sec the target time in seconds
-     * @return the remaining seconds until the target time
-     */
-    public long getLeftSec(final long sec) {
-        return this.getLeftNs(sec * Timer.NS_S) / Timer.NS_S;
-    }
-
 
     /**
      * Pauses the timer.
