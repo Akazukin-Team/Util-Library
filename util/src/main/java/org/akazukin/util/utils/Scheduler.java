@@ -40,22 +40,22 @@ public class Scheduler implements Closeable {
     Consumer<Throwable> throwableConsumer;
 
     /**
-     * Constructs a default {@code Scheduler} instance with a single thread.
+     * Constructs a default {@code Scheduler} instance with max number of pool sizes.
      * This scheduler uses a scheduled thread pool to manage task execution.
      */
     public Scheduler() {
-        this(1);
+        this(Integer.MAX_VALUE);
     }
 
     /**
      * Constructs a {@code Scheduler} instance with a specified number of threads.
      * This scheduler uses a scheduled thread pool to manage task execution.
      *
-     * @param threads the number of threads to be used in the scheduled thread pool.
-     *                Must be a positive integer.
+     * @param poolSize the number of threads to keep scheduled in the thread pool.
+     *                 Must be a positive integer.
      */
-    public Scheduler(final int threads) {
-        this.timer = Executors.newScheduledThreadPool(threads);
+    public Scheduler(final int poolSize) {
+        this.timer = Executors.newScheduledThreadPool(poolSize);
     }
 
     /**
@@ -73,13 +73,13 @@ public class Scheduler implements Closeable {
      * Constructs a {@code Scheduler} instance with a specified number of threads and a custom thread factory.
      * This scheduler uses a scheduled thread pool to manage task execution.
      *
-     * @param threads       the number of threads to be used in the scheduled thread pool.
+     * @param poolSize      the number of threads to keep scheduled in the thread pool.
      *                      Must be a positive integer.
      * @param threadFactory the {@link ThreadFactory} to use for creating new threads in the thread pool.
      *                      Must not be {@code null}.
      */
-    public Scheduler(final int threads, final ThreadFactory threadFactory) {
-        this.timer = Executors.newScheduledThreadPool(threads, threadFactory);
+    public Scheduler(final int poolSize, final ThreadFactory threadFactory) {
+        this.timer = Executors.newScheduledThreadPool(poolSize, threadFactory);
     }
 
     /**
