@@ -1,6 +1,6 @@
 package org.akazukin.util.utils;
 
-import org.akazukin.util.utils.timer.Timer;
+import org.akazukin.util.utils.time.Timer;
 
 public class TimerTest {
     private final Timer timer;
