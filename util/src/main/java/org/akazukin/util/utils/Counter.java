@@ -1,4 +1,4 @@
-package org.akazukin.util.utils.timer;
+package org.akazukin.util.utils;
 
 import lombok.AccessLevel;
 import lombok.Getter;

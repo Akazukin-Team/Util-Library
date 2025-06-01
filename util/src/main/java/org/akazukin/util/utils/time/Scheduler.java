@@ -1,4 +1,4 @@
-package org.akazukin.util.utils;
+package org.akazukin.util.utils.time;
 
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
