@@ -1,9 +1,9 @@
-package org.akazukin.util.utils;
+package org.akazukin.util.utils.time;
 
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
-import org.akazukin.util.annotation.ThreadSafe;
+import org.akazukin.annotation.marker.ThreadSafe;
 import org.akazukin.util.object.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +25,9 @@ import java.util.function.Consumer;
  * various scheduling and cancellation methods. It provides mechanisms
  * to handle exceptions during task execution via a configurable consumer.
  * The Scheduler also supports graceful shutdown to manage lifecycle effectively.
+ * <p>
+ * The class is thread-safe and can be used concurrently
+ * by multiple threads without the need for synchronization.
  */
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ThreadSafe
@@ -37,22 +40,22 @@ public class Scheduler implements Closeable {
     Consumer<Throwable> throwableConsumer;
 
     /**
-     * Constructs a default {@code Scheduler} instance with a single thread.
+     * Constructs a default {@code Scheduler} instance with max number of pool sizes.
      * This scheduler uses a scheduled thread pool to manage task execution.
      */
     public Scheduler() {
-        this(1);
+        this(Integer.MAX_VALUE);
     }
 
     /**
      * Constructs a {@code Scheduler} instance with a specified number of threads.
      * This scheduler uses a scheduled thread pool to manage task execution.
      *
-     * @param threads the number of threads to be used in the scheduled thread pool.
-     *                Must be a positive integer.
+     * @param poolSize the number of threads to keep scheduled in the thread pool.
+     *                 Must be a positive integer.
      */
-    public Scheduler(final int threads) {
-        this.timer = Executors.newScheduledThreadPool(threads);
+    public Scheduler(final int poolSize) {
+        this.timer = Executors.newScheduledThreadPool(poolSize);
     }
 
     /**
@@ -70,13 +73,13 @@ public class Scheduler implements Closeable {
      * Constructs a {@code Scheduler} instance with a specified number of threads and a custom thread factory.
      * This scheduler uses a scheduled thread pool to manage task execution.
      *
-     * @param threads       the number of threads to be used in the scheduled thread pool.
+     * @param poolSize      the number of threads to keep scheduled in the thread pool.
      *                      Must be a positive integer.
      * @param threadFactory the {@link ThreadFactory} to use for creating new threads in the thread pool.
      *                      Must not be {@code null}.
      */
-    public Scheduler(final int threads, final ThreadFactory threadFactory) {
-        this.timer = Executors.newScheduledThreadPool(threads, threadFactory);
+    public Scheduler(final int poolSize, final ThreadFactory threadFactory) {
+        this.timer = Executors.newScheduledThreadPool(poolSize, threadFactory);
     }
 
     /**
@@ -103,31 +106,15 @@ public class Scheduler implements Closeable {
 
     /**
      * Cancels all currently scheduled tasks in the scheduler.
-     * This method iterates through all the identifiers of scheduled tasks
-     * and invokes {@link #cancelTask(long)} for each task, ensuring all tasks
-     * are properly canceled.
+     * Each task will be terminated through its {@link java.util.concurrent.Future#cancel(boolean)} method with a {@code true} parameter.
+     * After cancellation, all tasks will be removed from the task collection.
      * <p>
-     * This method is thread-safe and synchronized to prevent concurrent modifications
-     * to the underlying task storage.
+     * This method is synchronized to ensure thread-safe operation when modifying the task list.
      */
     public synchronized void cancelAllTasks() {
-        this.tasks.keySet().forEach(this::cancelTask);
-    }
-
-    /**
-     * Cancels a scheduled task with the specified unique identifier.
-     * If the task is not found, an {@link IllegalArgumentException} is thrown.
-     *
-     * @param id the unique identifier of the task to be canceled.
-     *           It must match the identifier of a previously scheduled task.
-     * @throws IllegalArgumentException if a task with the specified identifier is not found.
-     */
-    public synchronized void cancelTask(final long id) {
-        final ScheduledFuture<?> task = this.tasks.remove(id);
-        if (task == null) {
-            throw new IllegalArgumentException("Task not found: " + id);
-        }
-        task.cancel(true);
+        this.tasks.values()
+                .forEach(t -> t.cancel(true));
+        this.tasks.clear();
     }
 
     /**
@@ -183,6 +170,22 @@ public class Scheduler implements Closeable {
                     this.timer.schedule(timerTask, delay.toConvert(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS));
         }
         return true;
+    }
+
+    /**
+     * Cancels a scheduled task with the specified unique identifier.
+     * If the task is not found, an {@link IllegalArgumentException} is thrown.
+     *
+     * @param id the unique identifier of the task to be canceled.
+     *           It must match the identifier of a previously scheduled task.
+     * @throws IllegalArgumentException if a task with the specified identifier is not found.
+     */
+    public synchronized void cancelTask(final long id) {
+        final ScheduledFuture<?> task = this.tasks.remove(id);
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found: " + id);
+        }
+        task.cancel(true);
     }
 
     /**

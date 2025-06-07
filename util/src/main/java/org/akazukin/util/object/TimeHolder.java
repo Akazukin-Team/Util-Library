@@ -1,6 +1,6 @@
 package org.akazukin.util.object;
 
-import org.akazukin.util.annotation.NonThreadSafe;
+import org.akazukin.annotation.marker.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -11,9 +11,12 @@ import java.util.concurrent.TimeUnit;
  * This class provides methods to store, update, and convert time values
  * between different units. The time is internally held in the unit specified
  * during the instantiation of the object.
+ * <p>
+ * The class is thread-safe and can be used concurrently
+ * by multiple threads without the need for synchronization.
  */
-@NonThreadSafe
-public class TimeHolder {
+@ThreadSafe
+public class TimeHolder implements Cloneable {
     /**
      * The time unit used as the internal representation for time values.
      * <p>
@@ -59,12 +62,25 @@ public class TimeHolder {
      * Adds the specified amount of time to the current time, converting the given time
      * value from the specified {@link TimeUnit} to the internal time unit.
      *
-     * @param time the amount of time to add, in the specified {@code TimeUnit}.
+     * @param time the amount of time to add, in the specified {@link  TimeUnit}.
      * @param unit the unit of the time being added.
      *             Must not be {@code null}.
      */
-    public void addTime(final long time, @NotNull final TimeUnit unit) {
+    public synchronized void addTime(final long time, @NotNull final TimeUnit unit) {
         this.time += this.unit.convert(time, unit);
+    }
+
+    /**
+     * Adds the time from a specified {@link TimeHolder} object to the current time holder.
+     * <p>
+     * The time value from the provided {@code TimeHolder} is converted to the same {@link TimeUnit}
+     * as the current holder before being added.
+     *
+     * @param holder the {@link TimeHolder} from which the time will be added.
+     *               Must not be {@code null}.
+     */
+    public synchronized void addTime(@NotNull final TimeHolder holder) {
+        this.time += holder.toConvert(this.unit);
     }
 
     /**
@@ -79,5 +95,32 @@ public class TimeHolder {
      */
     public long toConvert(@NotNull final TimeUnit unit) {
         return unit.convert(this.time, this.unit);
+    }
+
+    /**
+     * Multiplies the internally stored time by the specified factor.
+     * <p>
+     * This method adjusts the value of the time in the internal unit
+     * by multiplying it with the given factor.
+     *
+     * @param factor the factor by which the current time value should be multiplied.
+     *               Must be a valid double value.
+     */
+    public synchronized void multiply(final double factor) {
+        this.time = (long) (this.time * factor);
+    }
+
+    /**
+     * Creates and returns a copy of this {@link TimeHolder} instance.
+     * <p>
+     * The clone will have the same {@link TimeUnit} and internal time value as the original instance.
+     *
+     * @return a new instance of {@link TimeHolder} with the same state as this object.
+     */
+    @Override
+    public TimeHolder clone() {
+        final TimeHolder clone = new TimeHolder(this.unit);
+        clone.time = this.time;
+        return clone;
     }
 }

@@ -1,11 +1,12 @@
 package org.akazukin.util.concurrent;
 
 import lombok.Getter;
-import org.akazukin.util.annotation.ThreadSafe;
+import org.akazukin.annotation.marker.ThreadSafe;
 
 /**
  * A thread-safe reference holder that allows updating its value conditionally based on a
- * predicate. The update operation is synchronized to ensure atomicity and thread safety.
+ * predicate.
+ * The update operation is synchronized to ensure atomicity and thread safety.
  *
  * @param <T> the type of the value held by the reference
  */
