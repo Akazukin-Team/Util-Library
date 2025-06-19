@@ -37,7 +37,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test
-        run: ./gradlew build test
+        run: ./gradlew build test -Dorg.gradle.unsafe.configuration-cache=false
 
       - name: Publish to Nexus
         run: ./gradlew publishReleasePublicationToReleasesRepository publishSnapshotPublicationToSnapshotsRepository -Dorg.gradle.unsafe.configuration-cache=false
