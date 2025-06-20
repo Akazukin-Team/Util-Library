@@ -16,6 +16,10 @@ repositories {
     maven {
         name = 'Akazukin Repository - Public Library'
         url = 'https://maven.akazukin.org/refer/maven-public-libraries/'
+        credentials {
+            username = project.hasProperty('repository.username') ? project['repository.username'] : System.getenv('REPOSITORY_USERNAME')
+            password = project.hasProperty('repository.password') ? project['repository.password'] : System.getenv('REPOSITORY_PASSWORD')
+        }
 
         content {
             includeGroup 'org.akazukin'

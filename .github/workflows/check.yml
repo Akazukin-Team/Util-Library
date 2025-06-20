@@ -44,3 +44,6 @@ jobs:
 
       - name: Test
         run: ./gradlew test
+        env:
+          REPOSITORY_USERNAME: ${{ secrets.NEXUS_PUBLIC_LIBRARIES_USERNAME }}
+          REPOSITORY_PASSWORD: ${{ secrets.NEXUS_PUBLIC_LIBRARIES_PASSWORD }}
