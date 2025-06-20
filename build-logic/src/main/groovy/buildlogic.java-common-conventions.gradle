@@ -16,6 +16,10 @@ repositories {
     maven {
         name = 'Akazukin Repository - Public Library'
         url = 'https://maven.akazukin.org/refer/maven-public-libraries-releases/'
+
+        content {
+            includeGroup 'org.akazukin'
+        }
     }
 
     mavenCentral()
