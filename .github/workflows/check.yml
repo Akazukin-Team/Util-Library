@@ -43,7 +43,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew test --stacktrace --debug
         env:
           REPOSITORY_USERNAME: ${{ secrets.NEXUS_PUBLIC_LIBRARIES_USERNAME }}
           REPOSITORY_PASSWORD: ${{ secrets.NEXUS_PUBLIC_LIBRARIES_PASSWORD }}
