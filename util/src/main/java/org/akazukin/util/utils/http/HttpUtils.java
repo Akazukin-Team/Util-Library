@@ -72,7 +72,7 @@ public class HttpUtils {
      */
     public HttpResponse request(@NotNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
-                                @NotNull final HttpMethod method)
+                                @NotNull final String method)
             throws IOException, URISyntaxException {
         return request(url, header, body, method, DEFAULT_CONFIG);
     }
@@ -103,7 +103,7 @@ public class HttpUtils {
      */
     public HttpResponse request(@NotNull final String url,
                                 @Nullable final Properties header, @Nullable final String body,
-                                @NotNull final HttpMethod method,
+                                @NotNull final String method,
                                 @NotNull final HttpConfig config)
             throws IOException, URISyntaxException {
         HttpURLConnection con = null;
@@ -124,7 +124,7 @@ public class HttpUtils {
                 }
             }
 
-            con.setRequestMethod(method.getMethod());
+            con.setRequestMethod(method);
             con.setConnectTimeout(config.getConnectTimeout());
             con.setReadTimeout(5000);
             con.setInstanceFollowRedirects(false);
