@@ -17,6 +17,7 @@ import lombok.Getter;
  * where the enum constants are used to set or specify the desired request method.
  */
 @Getter
+@Deprecated
 public enum HttpMethod {
     GET("GET"),
     POST("POST");

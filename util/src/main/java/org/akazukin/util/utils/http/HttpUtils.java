@@ -33,6 +33,7 @@ import java.util.Properties;
  * - Customizable request configurations through {@code HttpConfig}.
  */
 @UtilityClass
+@Deprecated
 public class HttpUtils {
     private final static HttpConfig DEFAULT_CONFIG = new HttpConfig();
 
