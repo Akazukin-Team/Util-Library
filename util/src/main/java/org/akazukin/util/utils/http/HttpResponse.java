@@ -28,6 +28,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Deprecated
 public final class HttpResponse {
     int responseCode;
     byte[] response;

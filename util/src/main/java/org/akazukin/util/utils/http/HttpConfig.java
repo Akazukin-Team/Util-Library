@@ -23,6 +23,7 @@ import lombok.experimental.FieldDefaults;
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Deprecated
 public class HttpConfig {
     int connectTimeout = 2500;
     int readTimeout = 5000;
