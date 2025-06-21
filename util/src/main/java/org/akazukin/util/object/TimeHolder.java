@@ -1,5 +1,7 @@
 package org.akazukin.util.object;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,8 +17,9 @@ import java.util.concurrent.TimeUnit;
  * The class is thread-safe and can be used concurrently
  * by multiple threads without the need for synchronization.
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ThreadSafe
-public class TimeHolder implements Cloneable {
+public final class TimeHolder implements Cloneable {
     /**
      * The time unit used as the internal representation for time values.
      * <p>
@@ -27,7 +30,7 @@ public class TimeHolder implements Cloneable {
      *
      * @see TimeUnit
      */
-    private final TimeUnit unit;
+    final TimeUnit unit;
     /**
      * Stores the current time value in the internal {@link TimeUnit} of the {@code TimeHolder}.
      * <p>
@@ -35,7 +38,7 @@ public class TimeHolder implements Cloneable {
      * the containing {@code TimeHolder} class. All operations related to time addition
      * or conversion interact with this field as the core storage.
      */
-    private long time;
+    long time;
 
     /**
      * Constructs a {@code TimeHolder} instance with the default {@link TimeUnit#NANOSECONDS}.

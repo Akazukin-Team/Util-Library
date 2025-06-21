@@ -20,12 +20,12 @@ import org.akazukin.annotation.marker.NonThreadSafe;
  * @param <T> the type of the third element.
  */
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 @ToString
 @EqualsAndHashCode
 @NonThreadSafe
-public class Triple<F, S, T> {
+public final class Triple<F, S, T> {
     F first;
     S second;
     T third;

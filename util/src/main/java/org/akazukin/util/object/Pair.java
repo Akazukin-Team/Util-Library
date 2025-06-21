@@ -20,12 +20,12 @@ import org.akazukin.annotation.marker.NonThreadSafe;
  * @param <V> the type of the value
  */
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 @ToString
 @EqualsAndHashCode
 @NonThreadSafe
-public class Pair<K, V> {
+public final class Pair<K, V> {
     K key;
     V value;
 }
