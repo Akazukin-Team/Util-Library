@@ -22,8 +22,6 @@ A library providing utilities, interfaces for commonize and extended standard fe
 
 ## Features
 
-- **Utility Annotations**: Provides annotations for marking code such as `@NonThreadSafe` to indicate thread safety
-  characteristics.
 - **Custom Enhancements**: Extends standard Java libraries to add useful utilities.
 - **Interfaces**: Provide interfaces for commonize
 - Etc...
