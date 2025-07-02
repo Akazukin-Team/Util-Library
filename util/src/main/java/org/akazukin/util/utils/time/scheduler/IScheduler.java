@@ -26,6 +26,10 @@ public interface IScheduler extends Closeable {
      */
     boolean isScheduled(long id);
 
+    /**
+     * Cancels all currently scheduled tasks in the scheduler.
+     * After this operation, no previously scheduled tasks will be executed.
+     */
     void cancelAllTasks();
 
     /**
