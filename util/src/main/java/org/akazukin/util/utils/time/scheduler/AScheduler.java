@@ -32,6 +32,10 @@ public abstract class AScheduler<T> implements IScheduler {
     @Setter
     Consumer<Throwable> throwableConsumer;
 
+    protected boolean isScheduledInternal(final long id, final Object obj) {
+        return this.tasks.containsKey(id) && this.tasks.get(id).getKey() == obj;
+    }
+
     @Override
     public boolean isScheduled(final long id) {
         return this.tasks.containsKey(id);
@@ -66,7 +70,7 @@ public abstract class AScheduler<T> implements IScheduler {
                 }
             }
             synchronized (this) {
-                if (this.tasks.get(id).getKey() == obj) {
+                if (this.isScheduledInternal(id, obj)) {
                     this.tasks.remove(id);
                 }
             }
