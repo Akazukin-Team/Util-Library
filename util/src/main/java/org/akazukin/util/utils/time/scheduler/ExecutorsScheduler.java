@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
 import org.akazukin.util.object.TimeHolder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,10 +20,11 @@ import java.util.concurrent.TimeUnit;
  * It allows scheduling tasks with a delay or at fixed intervals
  * and supports configurable thread pool sizes and custom thread factories.
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ThreadSafe
-public class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
-    final ScheduledThreadPoolExecutor pool;
+public final class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
+    private static final int POOL_SHUTDOWN_TIMEOUT = 10;
+    ScheduledThreadPoolExecutor pool;
 
     /**
      * Constructs a default {@code Scheduler} instance with max number of pool sizes.
@@ -63,7 +65,7 @@ public class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
      * @param threadFactory the {@link ThreadFactory} to use for creating new threads in the thread pool.
      *                      Must not be {@code null}.
      */
-    public ExecutorsScheduler(final int poolSize, final ThreadFactory threadFactory) {
+    public ExecutorsScheduler(final int poolSize, @NotNull final ThreadFactory threadFactory) {
         this.pool = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(poolSize, threadFactory);
     }
 
@@ -84,18 +86,18 @@ public class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
         return this.pool.scheduleAtFixedRate(task,
                 delay.toConvert(TimeUnit.NANOSECONDS),
                 interval.toConvert(TimeUnit.NANOSECONDS),
-                TimeUnit.MILLISECONDS);
+                TimeUnit.NANOSECONDS);
     }
 
     @Override
     protected ScheduledFuture<?> scheduleInternal(final Runnable task, final TimeHolder delay) {
         return this.pool.schedule(task,
                 delay.toConvert(TimeUnit.NANOSECONDS),
-                TimeUnit.MILLISECONDS);
+                TimeUnit.NANOSECONDS);
     }
 
     @Override
-    protected void cancelInternal(final ScheduledFuture<?> task) {
+    protected void cancelInternal(@NotNull final ScheduledFuture<?> task) {
         task.cancel(true);
     }
 
@@ -108,7 +110,7 @@ public class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
     @SneakyThrows
     public void close() {
         this.pool.shutdown();
-        if (!this.pool.awaitTermination(10, TimeUnit.SECONDS)) {
+        if (!this.pool.awaitTermination(POOL_SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
             this.pool.shutdownNow();
         }
     }

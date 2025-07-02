@@ -162,5 +162,5 @@ public abstract class AScheduler<T> implements IScheduler {
 
     protected abstract T scheduleInternal(Runnable task, TimeHolder delay);
 
-    protected abstract void cancelInternal(T task);
+    protected abstract void cancelInternal(@NotNull T task);
 }

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
 import org.akazukin.util.object.TimeHolder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  * It allows scheduling tasks with a delay or at fixed intervals
  * and supports both daemon and non-daemon timer threads.
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ThreadSafe
-public class TimerScheduler extends AScheduler<TimerTask> {
-    final Timer timer;
+public final class TimerScheduler extends AScheduler<TimerTask> {
+    Timer timer;
 
     /**
      * Constructs a default {@code TimerScheduler} instance with a non-daemon timer thread.
@@ -67,7 +68,7 @@ public class TimerScheduler extends AScheduler<TimerTask> {
     }
 
     @Override
-    protected void cancelInternal(final TimerTask task) {
+    protected void cancelInternal(@NotNull final TimerTask task) {
         task.cancel();
     }
 
