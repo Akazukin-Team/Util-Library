@@ -1,8 +1,10 @@
 package org.akazukin.util.utils.time.scheduler;
 
 import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
+import org.akazukin.util.object.Pair;
 import org.akazukin.util.object.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,14 +27,10 @@ import java.util.function.Consumer;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @ThreadSafe
 public abstract class AScheduler<T> implements IScheduler {
-    final Map<Long, T> tasks = new HashMap<>();
+    final Map<Long, Pair<Object, T>> tasks = new HashMap<>();
     @Nullable
+    @Setter
     Consumer<Throwable> throwableConsumer;
-
-    @Override
-    public void setThrowableConsumer(final @Nullable Consumer<Throwable> throwableConsumer) {
-        this.throwableConsumer = throwableConsumer;
-    }
 
     @Override
     public boolean isScheduled(final long id) {
@@ -44,7 +42,8 @@ public abstract class AScheduler<T> implements IScheduler {
      */
     @Override
     public synchronized void cancelAllTasks() {
-        this.tasks.values().forEach(this::cancelInternal);
+        this.tasks.values()
+                .forEach(p -> this.cancelInternal(p.getValue()));
         this.tasks.clear();
     }
 
@@ -55,6 +54,7 @@ public abstract class AScheduler<T> implements IScheduler {
 
     @Override
     public boolean scheduleTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final boolean override) {
+        final Object obj = new Object();
         final Runnable timerTask = () -> {
             try {
                 task.run();
@@ -66,34 +66,36 @@ public abstract class AScheduler<T> implements IScheduler {
                 }
             }
             synchronized (this) {
-                if (this.tasks.get(id) == this) {
+                if (this.tasks.get(id).getKey() == obj) {
                     this.tasks.remove(id);
                 }
             }
         };
 
         synchronized (this) {
-            if (this.tasks.containsKey(id)) {
-                if (!override) {
-                    if (this.isScheduled(id)) {
-                        return false;
-                    }
+            if (override) {
+                final Pair<Object, T> e = this.tasks.remove(id);
+                if (e != null) {
+                    this.cancelInternal(e.getValue());
                 }
-                this.cancelTask(id);
+            } else {
+                if (this.tasks.containsKey(id)) {
+                    return false;
+                }
             }
 
-            this.tasks.put(id, this.scheduleInternal(timerTask, delay));
+            this.tasks.put(id, this.createPairScheduleInternal(obj, timerTask, delay));
         }
         return true;
     }
 
     @Override
     public synchronized void cancelTask(final long id) {
-        final T task = this.tasks.remove(id);
+        final Pair<Object, T> task = this.tasks.remove(id);
         if (task == null) {
             throw new IllegalArgumentException("Task not found: " + id);
         }
-        this.cancelInternal(task);
+        this.cancelInternal(task.getValue());
     }
 
     @Override
@@ -103,6 +105,7 @@ public abstract class AScheduler<T> implements IScheduler {
 
     @Override
     public boolean scheduleLoopingTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final TimeHolder interval, final boolean override) {
+        final Object obj = new Object();
         final Runnable timerTask = () -> {
             try {
                 task.run();
@@ -117,14 +120,18 @@ public abstract class AScheduler<T> implements IScheduler {
 
 
         synchronized (this) {
-            if (this.tasks.containsKey(id)) {
-                if (!override) {
+            if (override) {
+                final Pair<Object, T> e = this.tasks.remove(id);
+                if (e != null) {
+                    this.cancelInternal(e.getValue());
+                }
+            } else {
+                if (this.tasks.containsKey(id)) {
                     return false;
                 }
-                this.cancelTask(id);
             }
 
-            this.tasks.put(id, this.scheduleLoopInternal(timerTask, delay, interval));
+            this.tasks.put(id, this.createPairScheduleLoopInternal(obj, timerTask, delay, interval));
         }
         return true;
     }
@@ -137,7 +144,17 @@ public abstract class AScheduler<T> implements IScheduler {
                 .toArray();
     }
 
+    @NotNull
+    private Pair<Object, T> createPairScheduleLoopInternal(final Object obj, final Runnable task, final TimeHolder delay, final TimeHolder interval) {
+        return new Pair<>(obj, this.scheduleLoopInternal(task, delay, interval));
+    }
+
     protected abstract T scheduleLoopInternal(Runnable task, TimeHolder delay, TimeHolder interval);
+
+    @NotNull
+    private Pair<Object, T> createPairScheduleInternal(final Object obj, final Runnable task, final TimeHolder delay) {
+        return new Pair<>(obj, this.scheduleInternal(task, delay));
+    }
 
     protected abstract T scheduleInternal(Runnable task, TimeHolder delay);
 

@@ -69,7 +69,9 @@ public class ExecutorsScheduler extends AScheduler<ScheduledFuture<?>> {
 
     @Override
     public synchronized boolean isScheduled(final long id) {
-        return super.isScheduled(id) && !this.tasks.get(id).isDone() && !this.tasks.get(id).isCancelled();
+        return super.isScheduled(id)
+                && !this.tasks.get(id).getValue().isDone()
+                && !this.tasks.get(id).getValue().isCancelled();
     }
 
     @Override
