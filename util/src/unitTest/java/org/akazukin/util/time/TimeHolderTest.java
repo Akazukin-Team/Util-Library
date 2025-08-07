@@ -1,4 +1,4 @@
-package org.akazukin.util.object;
+package org.akazukin.util.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

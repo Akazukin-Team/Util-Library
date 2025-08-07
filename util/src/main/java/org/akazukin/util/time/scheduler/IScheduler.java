@@ -1,6 +1,6 @@
-package org.akazukin.util.utils.time.scheduler;
+package org.akazukin.util.time.scheduler;
 
-import org.akazukin.util.object.TimeHolder;
+import org.akazukin.util.time.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

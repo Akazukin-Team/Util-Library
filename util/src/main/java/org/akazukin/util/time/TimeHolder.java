@@ -1,4 +1,4 @@
-package org.akazukin.util.object;
+package org.akazukin.util.time;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

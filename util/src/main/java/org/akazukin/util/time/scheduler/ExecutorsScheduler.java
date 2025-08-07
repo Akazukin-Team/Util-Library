@@ -1,10 +1,10 @@
-package org.akazukin.util.utils.time.scheduler;
+package org.akazukin.util.time.scheduler;
 
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
-import org.akazukin.util.object.TimeHolder;
+import org.akazukin.util.time.TimeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executors;
