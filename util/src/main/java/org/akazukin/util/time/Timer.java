@@ -1,9 +1,8 @@
-package org.akazukin.util.utils.time;
+package org.akazukin.util.time;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.util.interfaces.Resettable;
-import org.akazukin.util.object.TimeHolder;
 
 import java.util.concurrent.TimeUnit;
 
