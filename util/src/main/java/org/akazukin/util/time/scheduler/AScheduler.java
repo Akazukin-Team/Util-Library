@@ -27,6 +27,8 @@ import java.util.function.Consumer;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @ThreadSafe
 public abstract class AScheduler<T> implements IScheduler {
+    private static final String EXCE_TRACE = "Scheduler stack trace. The stack trace is called from controller thread.";
+
     final Map<Long, Pair<Object, T>> tasks = new HashMap<>();
     @Nullable
     @Setter
@@ -58,12 +60,23 @@ public abstract class AScheduler<T> implements IScheduler {
 
     @Override
     public boolean scheduleTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final boolean override) {
+        final IllegalStateException e_ = new IllegalStateException(EXCE_TRACE);
         final Object obj = new Object();
         final Runnable timerTask = () -> {
             try {
                 task.run();
             } catch (final Throwable e) {
                 synchronized (this) {
+                    {
+                        Throwable t = e;
+                        while (true) {
+                            if (t.getCause() == null) {
+                                t.initCause(e_);
+                                break;
+                            }
+                            t = t.getCause();
+                        }
+                    }
                     if (this.throwableConsumer != null) {
                         this.throwableConsumer.accept(e);
                     }
@@ -110,11 +123,22 @@ public abstract class AScheduler<T> implements IScheduler {
     @Override
     public boolean scheduleLoopingTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final TimeHolder interval, final boolean override) {
         final Object obj = new Object();
+        final IllegalStateException e_ = new IllegalStateException(EXCE_TRACE);
         final Runnable timerTask = () -> {
             try {
                 task.run();
             } catch (final Throwable e) {
                 synchronized (this) {
+                    {
+                        Throwable t = e;
+                        while (true) {
+                            if (t.getCause() == null) {
+                                t.initCause(e_);
+                                break;
+                            }
+                            t = t.getCause();
+                        }
+                    }
                     if (this.throwableConsumer != null) {
                         this.throwableConsumer.accept(e);
                     }
