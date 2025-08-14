@@ -34,6 +34,17 @@ public abstract class AScheduler<T> implements IScheduler {
     @Setter
     Consumer<Throwable> throwableConsumer;
 
+    private static void processExce(final Throwable t, final Throwable cause) {
+        Throwable t_ = t;
+        while (true) {
+            if (t_.getCause() == null) {
+                t_.initCause(cause);
+                break;
+            }
+            t_ = t_.getCause();
+        }
+    }
+
     protected boolean isScheduledInternal(final long id, final Object obj) {
         return this.tasks.containsKey(id) && this.tasks.get(id).getKey() == obj;
     }
@@ -65,21 +76,10 @@ public abstract class AScheduler<T> implements IScheduler {
         final Runnable timerTask = () -> {
             try {
                 task.run();
-            } catch (final Throwable e) {
+            } catch (final Throwable t) {
                 synchronized (this) {
-                    {
-                        Throwable t = e;
-                        while (true) {
-                            if (t.getCause() == null) {
-                                t.initCause(e_);
-                                break;
-                            }
-                            t = t.getCause();
-                        }
-                    }
-                    if (this.throwableConsumer != null) {
-                        this.throwableConsumer.accept(e);
-                    }
+                    processExce(t, e_);
+                    this.consumeThrowable(t);
                 }
             }
             synchronized (this) {
@@ -89,19 +89,25 @@ public abstract class AScheduler<T> implements IScheduler {
             }
         };
 
-        synchronized (this) {
-            if (override) {
-                final Pair<Object, T> e = this.tasks.remove(id);
-                if (e != null) {
-                    this.cancelInternal(e.getValue());
+        try {
+            synchronized (this) {
+                if (override) {
+                    final Pair<Object, T> e = this.tasks.remove(id);
+                    if (e != null) {
+                        this.cancelInternal(e.getValue());
+                    }
+                } else {
+                    if (this.tasks.containsKey(id)) {
+                        return false;
+                    }
                 }
-            } else {
-                if (this.tasks.containsKey(id)) {
-                    return false;
-                }
-            }
 
-            this.tasks.put(id, this.createPairScheduleInternal(obj, timerTask, delay));
+                this.tasks.put(id, this.createPairScheduleInternal(obj, timerTask, delay));
+            }
+        } catch (final Throwable t) {
+            processExce(t, e_);
+            this.consumeThrowable(t);
+            throw t;
         }
         return true;
     }
@@ -127,42 +133,43 @@ public abstract class AScheduler<T> implements IScheduler {
         final Runnable timerTask = () -> {
             try {
                 task.run();
-            } catch (final Throwable e) {
+            } catch (final Throwable t) {
                 synchronized (this) {
-                    {
-                        Throwable t = e;
-                        while (true) {
-                            if (t.getCause() == null) {
-                                t.initCause(e_);
-                                break;
-                            }
-                            t = t.getCause();
-                        }
-                    }
-                    if (this.throwableConsumer != null) {
-                        this.throwableConsumer.accept(e);
-                    }
+                    processExce(t, e_);
+                    this.consumeThrowable(t);
                 }
             }
         };
 
+        try {
+            synchronized (this) {
+                if (override) {
+                    final Pair<Object, T> e = this.tasks.remove(id);
+                    if (e != null) {
+                        this.cancelInternal(e.getValue());
+                    }
+                } else {
+                    if (this.tasks.containsKey(id)) {
+                        return false;
+                    }
+                }
 
-        synchronized (this) {
-            if (override) {
-                final Pair<Object, T> e = this.tasks.remove(id);
-                if (e != null) {
-                    this.cancelInternal(e.getValue());
-                }
-            } else {
-                if (this.tasks.containsKey(id)) {
-                    return false;
-                }
+                this.tasks.put(id, this.createPairScheduleLoopInternal(obj, timerTask, delay, interval));
             }
-
-            this.tasks.put(id, this.createPairScheduleLoopInternal(obj, timerTask, delay, interval));
+        } catch (final Throwable t) {
+            processExce(t, e_);
+            this.consumeThrowable(t);
+            throw t;
         }
         return true;
     }
+
+    protected void consumeThrowable(final Throwable t) {
+        if (this.throwableConsumer != null) {
+            this.throwableConsumer.accept(t);
+        }
+    }
+
 
     @Override
     public synchronized long[] getAllScheduledTasks() {
