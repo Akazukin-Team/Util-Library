@@ -71,16 +71,14 @@ public abstract class AScheduler<T> implements IScheduler {
 
     @Override
     public boolean scheduleTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final boolean override) {
-        final IllegalStateException e_ = new IllegalStateException(EXCE_TRACE);
+        final IllegalStateException detailExce = new IllegalStateException(EXCE_TRACE);
         final Object obj = new Object();
         final Runnable timerTask = () -> {
             try {
                 task.run();
             } catch (final Throwable t) {
-                synchronized (this) {
-                    processExce(t, e_);
-                    this.consumeThrowable(t);
-                }
+                processExce(t, detailExce);
+                this.consumeThrowable(t);
             }
             synchronized (this) {
                 if (this.isScheduledInternal(id, obj)) {
@@ -105,7 +103,6 @@ public abstract class AScheduler<T> implements IScheduler {
                 this.tasks.put(id, this.createPairScheduleInternal(obj, timerTask, delay));
             }
         } catch (final Throwable t) {
-            processExce(t, e_);
             this.consumeThrowable(t);
             throw t;
         }
@@ -113,8 +110,11 @@ public abstract class AScheduler<T> implements IScheduler {
     }
 
     @Override
-    public synchronized void cancelTask(final long id) {
-        final Pair<Object, T> task = this.tasks.remove(id);
+    public void cancelTask(final long id) {
+        final Pair<Object, T> task;
+        synchronized (this) {
+            task = this.tasks.remove(id);
+        }
         if (task == null) {
             throw new IllegalArgumentException("Task not found: " + id);
         }
@@ -129,15 +129,13 @@ public abstract class AScheduler<T> implements IScheduler {
     @Override
     public boolean scheduleLoopingTask(final long id, @NotNull final Runnable task, final TimeHolder delay, final TimeHolder interval, final boolean override) {
         final Object obj = new Object();
-        final IllegalStateException e_ = new IllegalStateException(EXCE_TRACE);
+        final IllegalStateException detailExce = new IllegalStateException(EXCE_TRACE);
         final Runnable timerTask = () -> {
             try {
                 task.run();
             } catch (final Throwable t) {
-                synchronized (this) {
-                    processExce(t, e_);
-                    this.consumeThrowable(t);
-                }
+                processExce(t, detailExce);
+                this.consumeThrowable(t);
             }
         };
 
@@ -157,7 +155,6 @@ public abstract class AScheduler<T> implements IScheduler {
                 this.tasks.put(id, this.createPairScheduleLoopInternal(obj, timerTask, delay, interval));
             }
         } catch (final Throwable t) {
-            processExce(t, e_);
             this.consumeThrowable(t);
             throw t;
         }
