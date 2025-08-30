@@ -27,6 +27,9 @@ testing {
 
 tasks.withType(Test).configureEach {
     it.workingDir = new File(projectDir, "run/test/${it.name}")
+    if (!it.workingDir.exists()) {
+        it.workingDir.mkdirs()
+    }
 }
 
 tasks.named('check') {
