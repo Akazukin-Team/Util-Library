@@ -8,12 +8,16 @@ plugins {
 testing {
     suites {
         unitTest(JvmTestSuite) {
+            useJUnitJupiter()
+
             dependencies {
                 implementation project()
             }
         }
 
         integrationTest(JvmTestSuite) {
+            useJUnitJupiter()
+
             dependencies {
                 implementation project()
             }
