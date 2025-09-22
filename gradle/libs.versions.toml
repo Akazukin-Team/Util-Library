@@ -1,7 +1,7 @@
 [versions]
 # App deps
 akz-annotation-marker = "1.1.0"
-lombok = "1.18.38"
+lombok = "1.18.42"
 gson = "2.12.1"
 slf4j = "2.1.0-alpha1"
 jetbrains-annotation = "26.0.2"
