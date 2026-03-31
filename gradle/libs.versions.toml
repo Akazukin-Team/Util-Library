@@ -2,7 +2,6 @@
 # App deps
 akz-annotation-marker = "1.1.0"
 lombok = "1.18.44"
-gson = "2.12.1"
 slf4j = "2.1.0-alpha1"
 jetbrains-annotation = "26.1.0"
 
@@ -18,7 +17,6 @@ jmh-pl = "0.7.3"
 #App deps
 akz-annotation-marker = { module = "org.akazukin:annotation-marker", version.ref = "akz-annotation-marker" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotation" }
 
