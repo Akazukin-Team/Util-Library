@@ -1,7 +1,8 @@
-package org.akazukin.util.object;
+package org.akazukin.util.time;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.akazukin.annotation.marker.Immutable;
 import org.akazukin.annotation.marker.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,9 @@ import java.util.concurrent.TimeUnit;
  * The class is thread-safe and can be used concurrently
  * by multiple threads without the need for synchronization.
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ThreadSafe
+@Immutable
 public final class TimeHolder implements Cloneable {
     /**
      * The time unit used as the internal representation for time values.
@@ -30,7 +32,7 @@ public final class TimeHolder implements Cloneable {
      *
      * @see TimeUnit
      */
-    final TimeUnit unit;
+    TimeUnit unit;
     /**
      * Stores the current time value in the internal {@link TimeUnit} of the {@code TimeHolder}.
      * <p>
@@ -47,7 +49,22 @@ public final class TimeHolder implements Cloneable {
      * nanoseconds as its internal time unit.
      */
     public TimeHolder() {
-        this(TimeUnit.NANOSECONDS);
+        this(0, TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * Constructs a {@code TimeHolder} instance with the specified time and {@link TimeUnit}.
+     * <p>
+     * The time value is converted to nanoseconds for internal storage, while the specified
+     * unit is used as the internal time unit for all operations.
+     *
+     * @param time the initial time value, in the specified {@link TimeUnit}.
+     * @param unit the {@link TimeUnit} to be used as the internal unit of time.
+     *             Must not be {@code null}.
+     */
+    public TimeHolder(final long time, @NotNull final TimeUnit unit) {
+        this.unit = unit;
+        this.time = time;
     }
 
     /**
@@ -58,19 +75,20 @@ public final class TimeHolder implements Cloneable {
      *             Must not be {@code null}.
      */
     public TimeHolder(@NotNull final TimeUnit unit) {
-        this.unit = unit;
+        this(0, unit);
     }
 
     /**
      * Adds the specified amount of time to the current time, converting the given time
      * value from the specified {@link TimeUnit} to the internal time unit.
      *
-     * @param time the amount of time to add, in the specified {@link  TimeUnit}.
+     * @param time the amount of time to add, in the specified {@link TimeUnit}.
      * @param unit the unit of the time being added.
      *             Must not be {@code null}.
+     * @return a new {@link TimeHolder} instance with the added time.
      */
-    public synchronized void addTime(final long time, @NotNull final TimeUnit unit) {
-        this.time += this.unit.convert(time, unit);
+    public TimeHolder addTime(final long time, @NotNull final TimeUnit unit) {
+        return new TimeHolder(this.time + this.unit.convert(time, unit), this.unit);
     }
 
     /**
@@ -81,9 +99,10 @@ public final class TimeHolder implements Cloneable {
      *
      * @param holder the {@link TimeHolder} from which the time will be added.
      *               Must not be {@code null}.
+     * @return a new {@link TimeHolder} instance with the added time.
      */
-    public synchronized void addTime(@NotNull final TimeHolder holder) {
-        this.time += holder.toConvert(this.unit);
+    public TimeHolder addTime(@NotNull final TimeHolder holder) {
+        return new TimeHolder(this.time + holder.toConvert(this.unit), this.unit);
     }
 
     /**
@@ -108,9 +127,10 @@ public final class TimeHolder implements Cloneable {
      *
      * @param factor the factor by which the current time value should be multiplied.
      *               Must be a valid double value.
+     * @return a new {@link TimeHolder} instance with the multiplied time value.
      */
-    public synchronized void multiply(final double factor) {
-        this.time = (long) (this.time * factor);
+    public TimeHolder multiply(final double factor) {
+        return new TimeHolder((long) (this.time * factor), this.unit);
     }
 
     /**
@@ -122,8 +142,6 @@ public final class TimeHolder implements Cloneable {
      */
     @Override
     public TimeHolder clone() {
-        final TimeHolder clone = new TimeHolder(this.unit);
-        clone.time = this.time;
-        return clone;
+        return new TimeHolder(this.time, this.unit);
     }
 }

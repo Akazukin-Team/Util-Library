@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class ArrayUtils {
     public static final String EX_ARRAY_NULL = "Array must not be null";
     public static final String EX_SIZE_NEGATIVE = "The size of array must be positive";
+    public static final String EXCE_INDEX_NEGATIVE = "Index must be positive";
 
     /**
      * Concatenates multiple arrays of the same type into a single array.
@@ -474,5 +475,16 @@ public class ArrayUtils {
     @Nullable
     public <T> T getByRandom(@NonNull final T[] arr) {
         return arr[(int) (Math.random() * arr.length)];
+    }
+
+    @Nullable
+    public <T> T getOrNull(final T[] arr, final int index) {
+        if (index < 0) {
+            throw new IllegalArgumentException(EXCE_INDEX_NEGATIVE);
+        }
+        if (arr == null || arr.length <= index) {
+            return null;
+        }
+        return arr[index];
     }
 }
