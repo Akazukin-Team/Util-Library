@@ -274,4 +274,27 @@ public class StringUtils {
         }
         return list.toArray(EMPTY_ARRAY);
     }
+
+    public static String replace(final CharSequence c, final CharSequence before, final CharSequence after) {
+        final StringBuilder res = new StringBuilder();
+        final int cLen = c.length();
+        final int beforeLen = before.length();
+        loop:
+        for (int i = 0; i < cLen; ) {
+            if (cLen - beforeLen < i) {
+                res.append(c.subSequence(i, cLen));
+                break;
+            }
+            for (int i2 = 0; i2 < beforeLen; i2++) {
+                if (c.charAt(i + i2) != before.charAt(i2)) {
+                    res.append(c.subSequence(i, i + i2));
+                    i += i2 + 1;
+                    continue loop;
+                }
+            }
+            res.append(after);
+            i += beforeLen;
+        }
+        return res.toString();
+    }
 }
