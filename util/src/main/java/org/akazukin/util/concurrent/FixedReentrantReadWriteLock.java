@@ -2,11 +2,14 @@ package org.akazukin.util.concurrent;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,6 +37,18 @@ public class FixedReentrantReadWriteLock {
             final Lock lock = new Lock(this, req);
             this.locks.add(lock);
             this.lockRequests.remove(req);
+
+            if (!shared) {
+                final Collection<Lock> toBorrow = new HashSet<>();
+                for (final Lock existingLock : this.locks) {
+                    if (existingLock != lock && existingLock.isShared() && existingLock.isLendable()) {
+                        lock.addLend(existingLock);
+                        toBorrow.add(existingLock);
+                    }
+                }
+                this.locks.removeAll(toBorrow);
+            }
+
             return lock;
         } catch (final InterruptedException e) {
             throw new RuntimeException(e);
@@ -63,7 +78,17 @@ public class FixedReentrantReadWriteLock {
         } else {
             final boolean hasSelfLock = this.locks.stream()
                     .anyMatch(lock -> lock.getOwner() == req.getOwner());
-            return hasSelfLock || this.locks.isEmpty();
+            if (hasSelfLock) {
+                return true;
+            }
+            if (!this.locks.isEmpty()) {
+                for (final Lock lock : this.locks) {
+                    if (!lock.isShared() || !lock.isLendable()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 
@@ -93,10 +118,15 @@ public class FixedReentrantReadWriteLock {
         return this.locks.size();
     }
 
-    public void unlock(final ILock lock) {
+    public void unlock(final ILock ilock) {
         this.mutex.lock();
         try {
-            this.locks.remove(lock);
+            this.locks.remove(ilock);
+            if (ilock instanceof Lock) {
+                final Lock lock = (Lock) ilock;
+                final Lock[] lentLocks = lock.clearLends();
+                Collections.addAll(this.locks, lentLocks);
+            }
             this.condition.signalAll();
         } finally {
             this.mutex.unlock();
@@ -110,6 +140,8 @@ public class FixedReentrantReadWriteLock {
     public interface ILock extends AutoCloseable {
         @Override
         void close();
+
+        void setLendable(boolean lendable);
     }
 
     @Getter
@@ -124,14 +156,35 @@ public class FixedReentrantReadWriteLock {
         }
     }
 
-    @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-    private static class Lock implements ILock {
-        FixedReentrantReadWriteLock lock;
-        LockRequest request;
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    static class Lock implements ILock {
+        private static final Lock[] EMPTY_ARR = new Lock[0];
+
+        final FixedReentrantReadWriteLock lock;
+        final LockRequest request;
+        final Set<Lock> lends = new HashSet<>();
+        @Getter
+        @Setter
+        boolean lendable;
 
         public Lock(final FixedReentrantReadWriteLock lock, final LockRequest request) {
             this.lock = lock;
             this.request = request;
+        }
+
+        public synchronized void addLend(final Lock lock) {
+            this.lends.add(lock);
+        }
+
+        public synchronized void setLends(final Lock lock) {
+            this.lends.clear();
+            this.lends.add(lock);
+        }
+
+        public synchronized Lock[] clearLends() {
+            final Lock[] res = this.lends.toArray(EMPTY_ARR);
+            this.lends.clear();
+            return res;
         }
 
         public Thread getOwner() {
@@ -146,5 +199,6 @@ public class FixedReentrantReadWriteLock {
         public void close() {
             this.lock.unlock(this);
         }
+
     }
 }
