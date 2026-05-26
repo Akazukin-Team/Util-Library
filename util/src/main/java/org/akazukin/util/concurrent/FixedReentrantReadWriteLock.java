@@ -13,11 +13,12 @@ import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FixedReentrantReadWriteLock {
-    private final ReentrantLock mutex = new ReentrantLock();
-    private final Condition condition = this.mutex.newCondition();
-    private final Collection<LockRequest> lockRequests = new LinkedHashSet<>();
-    private final Collection<Lock> locks = new HashSet<>();
+    ReentrantLock mutex = new ReentrantLock();
+    Condition condition = this.mutex.newCondition();
+    Collection<LockRequest> lockRequests = new LinkedHashSet<>();
+    Collection<Lock> locks = new HashSet<>();
 
     public ILock exclusiveLock() {
         return this.lock(false);
@@ -157,7 +158,7 @@ public class FixedReentrantReadWriteLock {
     }
 
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    static class Lock implements ILock {
+    private static class Lock implements ILock {
         private static final Lock[] EMPTY_ARR = new Lock[0];
 
         final FixedReentrantReadWriteLock lock;
@@ -167,7 +168,7 @@ public class FixedReentrantReadWriteLock {
         @Setter
         boolean lendable;
 
-        public Lock(final FixedReentrantReadWriteLock lock, final LockRequest request) {
+        private Lock(final FixedReentrantReadWriteLock lock, final LockRequest request) {
             this.lock = lock;
             this.request = request;
         }
@@ -199,6 +200,5 @@ public class FixedReentrantReadWriteLock {
         public void close() {
             this.lock.unlock(this);
         }
-
     }
 }
