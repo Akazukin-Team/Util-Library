@@ -228,11 +228,7 @@ public class FixedReentrantReadWriteLockTest {
                 assertEquals(1, locker.getLockCount());
                 assertEquals(FixedReentrantReadWriteLock.LockType.SHARED, locker.getLockType());
 
-                if (lock instanceof FixedReentrantReadWriteLock.Lock) {
-                    final FixedReentrantReadWriteLock.Lock castLock =
-                            (FixedReentrantReadWriteLock.Lock) lock;
-                    castLock.setLendable(true);
-                }
+                lock.setLendable(true);
 
                 try {
                     Thread.sleep(300);
@@ -267,11 +263,7 @@ public class FixedReentrantReadWriteLockTest {
         // Thread 1: acquire first shared lock and set lendable
         final CompletableFuture<Boolean> sharedFuture1 = CompletableFuture.supplyAsync(() -> {
             try (final FixedReentrantReadWriteLock.ILock lock = locker.sharedLock()) {
-                if (lock instanceof FixedReentrantReadWriteLock.Lock) {
-                    final FixedReentrantReadWriteLock.Lock castLock =
-                            (FixedReentrantReadWriteLock.Lock) lock;
-                    castLock.setLendable(true);
-                }
+                lock.setLendable(true);
 
                 try {
                     Thread.sleep(300);
@@ -286,11 +278,7 @@ public class FixedReentrantReadWriteLockTest {
         // Thread 2: acquire second shared lock and set lendable
         final CompletableFuture<Boolean> sharedFuture2 = CompletableFuture.supplyAsync(() -> {
             try (final FixedReentrantReadWriteLock.ILock lock = locker.sharedLock()) {
-                if (lock instanceof FixedReentrantReadWriteLock.Lock) {
-                    final FixedReentrantReadWriteLock.Lock castLock =
-                            (FixedReentrantReadWriteLock.Lock) lock;
-                    castLock.setLendable(true);
-                }
+                lock.setLendable(true);
 
                 try {
                     Thread.sleep(300);
@@ -372,11 +360,7 @@ public class FixedReentrantReadWriteLockTest {
         // Thread 1: acquire shared lock and set lendable
         final CompletableFuture<Boolean> sharedFuture = CompletableFuture.supplyAsync(() -> {
             try (final FixedReentrantReadWriteLock.ILock lock = locker.sharedLock()) {
-                if (lock instanceof FixedReentrantReadWriteLock.Lock) {
-                    final FixedReentrantReadWriteLock.Lock castLock =
-                            (FixedReentrantReadWriteLock.Lock) lock;
-                    castLock.setLendable(true);
-                }
+                lock.setLendable(true);
 
                 try {
                     Thread.sleep(150);
