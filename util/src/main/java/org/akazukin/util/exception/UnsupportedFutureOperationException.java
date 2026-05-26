@@ -2,6 +2,7 @@ package org.akazukin.util.exception;
 
 import lombok.AllArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -18,35 +19,43 @@ import java.io.Serializable;
  * @see UnsupportedOperationException
  */
 public class UnsupportedFutureOperationException extends UnsupportedOperationException {
+    @Serial
     private static final long serialVersionUID = -923753289532491726L;
 
-    Version version;
+    final Version version;
 
     public UnsupportedFutureOperationException() {
+        this.version = null;
     }
 
     public UnsupportedFutureOperationException(final String message) {
         super(message);
+        this.version = null;
     }
 
     public UnsupportedFutureOperationException(final String message, final Throwable cause) {
         super(message, cause);
+        this.version = null;
     }
 
     public UnsupportedFutureOperationException(final Throwable cause) {
         super(cause);
+        this.version = null;
     }
 
     public UnsupportedFutureOperationException(final String message, final Version version) {
         super(message);
+        this.version = version;
     }
 
     public UnsupportedFutureOperationException(final String message, final Version version, final Throwable cause) {
         super(message, cause);
+        this.version = version;
     }
 
     public UnsupportedFutureOperationException(final Version version, final Throwable cause) {
         super(cause);
+        this.version = version;
     }
 
     @Override
@@ -56,7 +65,8 @@ public class UnsupportedFutureOperationException extends UnsupportedOperationExc
 
     @AllArgsConstructor(staticName = "of")
     public static class Version implements Serializable {
-        public static final long serialVersionUID = 1L;
+        @Serial
+        private static final long serialVersionUID = 454775608003565364L;
 
         String versionStr;
         long versionNum;
