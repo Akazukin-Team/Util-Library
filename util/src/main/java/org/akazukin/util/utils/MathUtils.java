@@ -61,54 +61,6 @@ public class MathUtils {
     }
 
     /**
-     * Clamps a given integer value within the range specified by two boundary values.
-     * The range is inclusive and automatically determines the minimum and maximum boundary
-     * regardless of order.
-     *
-     * @param amount the value to be clamped
-     * @param range  the first boundary of the clamping range
-     * @param range2 the second boundary of the clamping range
-     * @return the clamped value that lies within the specified range
-     */
-    public static int clamp(final int amount, final int range, final int range2) {
-        final int min = Math.min(range, range2);
-        final int max = Math.max(range, range2);
-        return Math.min(Math.max(amount, min), max);
-    }
-
-    /**
-     * Clamps a given integer value within the range specified by two boundary values.
-     * The range is inclusive and automatically determines the minimum and maximum boundary
-     * regardless of order.
-     *
-     * @param amount the value to be clamped
-     * @param range  the first boundary of the clamping range
-     * @param range2 the second boundary of the clamping range
-     * @return the clamped value that lies within the specified range
-     */
-    public static double clamp(final double amount, final double range, final double range2) {
-        final double min = Math.min(range, range2);
-        final double max = Math.max(range, range2);
-        return Math.min(Math.max(amount, min), max);
-    }
-
-    /**
-     * Clamps a given integer value within the range specified by two boundary values.
-     * The range is inclusive and automatically determines the minimum and maximum boundary
-     * regardless of order.
-     *
-     * @param amount the value to be clamped
-     * @param range  the first boundary of the clamping range
-     * @param range2 the second boundary of the clamping range
-     * @return the clamped value that lies within the specified range
-     */
-    public static float clamp(final float amount, final float range, final float range2) {
-        final float min = Math.min(range, range2);
-        final float max = Math.max(range, range2);
-        return Math.min(Math.max(amount, min), max);
-    }
-
-    /**
      * Bring value closer to base by percent
      *
      * @param value   The number of doubles

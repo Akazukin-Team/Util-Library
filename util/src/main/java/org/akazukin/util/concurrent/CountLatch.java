@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
 
+import java.io.Serial;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
@@ -119,6 +120,7 @@ public final class CountLatch {
      * based on this count.
      */
     private static final class Sync extends AbstractQueuedSynchronizer {
+        @Serial
         private static final long serialVersionUID = 1671835981426064175L;
 
         /**

@@ -1,6 +1,8 @@
 package org.akazukin.util.concurrent;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.akazukin.annotation.marker.ThreadSafe;
 
 /**
@@ -10,6 +12,7 @@ import org.akazukin.annotation.marker.ThreadSafe;
  *
  * @param <T> the type of the value held by the reference
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ThreadSafe
 public class ConditionalAtomicReference<T> {
     final ValuePredicate<T> supplier;

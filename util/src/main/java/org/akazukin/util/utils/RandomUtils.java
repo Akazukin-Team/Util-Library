@@ -11,7 +11,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RandomUtils {
     private static final String BadBound = "bound must be positive";
-    private static final long serialVersionUID = -2560973338619712162L;
 
     Random random;
 
@@ -171,7 +170,7 @@ public class RandomUtils {
      */
     public long nextLong(final long bound) {
         if (this.random instanceof ThreadLocalRandom) {
-            ((ThreadLocalRandom) this.random).nextLong(bound);
+            this.random.nextLong(bound);
         }
 
         if (bound <= 0L) {

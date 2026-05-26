@@ -1,7 +1,6 @@
 package org.akazukin.util.utils.http;
 
 import lombok.experimental.UtilityClass;
-import org.akazukin.util.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -148,13 +147,13 @@ public class HttpUtils {
 
             try (final InputStream is = con.getInputStream()) {
                 if (is != null) {
-                    resIS = IOUtils.readAllBytes(is);
+                    resIS = is.readAllBytes();
                 }
             }
 
             try (final InputStream is = con.getErrorStream()) {
                 if (is != null) {
-                    errorIS = IOUtils.readAllBytes(is);
+                    errorIS = is.readAllBytes();
                 }
             }
 

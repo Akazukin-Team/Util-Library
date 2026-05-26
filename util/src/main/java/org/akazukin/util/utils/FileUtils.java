@@ -101,7 +101,7 @@ public class FileUtils {
     @Nullable
     public static byte[] getResource(final File file) throws IOException {
         try (final FileInputStream fis = new FileInputStream(file)) {
-            return IOUtils.readAllBytes(fis);
+            return fis.readAllBytes();
         } catch (final NullPointerException | FileNotFoundException ignored) {
             return null;
         } catch (final IOException e) {
@@ -121,7 +121,7 @@ public class FileUtils {
             if (is == null) {
                 return null;
             }
-            return IOUtils.readAllBytes(is);
+            return is.readAllBytes();
         }
     }
 

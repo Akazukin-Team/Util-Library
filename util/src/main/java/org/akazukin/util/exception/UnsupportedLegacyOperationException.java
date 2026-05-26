@@ -1,5 +1,7 @@
 package org.akazukin.util.exception;
 
+import java.io.Serial;
+
 /**
  * Thrown to indicate that an operation is not supported within the current legacy context.
  * <p>
@@ -13,6 +15,7 @@ package org.akazukin.util.exception;
  * @see UnsupportedOperationException
  */
 public class UnsupportedLegacyOperationException extends UnsupportedOperationException {
+    @Serial
     private static final long serialVersionUID = -923753289532491726L;
 
     public UnsupportedLegacyOperationException() {
