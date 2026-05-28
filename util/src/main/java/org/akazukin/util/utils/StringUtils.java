@@ -133,18 +133,16 @@ public class StringUtils {
         final int[] p = new int[n + 1];
 
         int i;
-        int j;
+        for (i = 0; i <= n; i++) {
+            p[i] = i;
+        }
+
         int upperLeft;
         int upper;
 
         char rightJ;
         int cost;
-
-        for (i = 0; i <= n; i++) {
-            p[i] = i;
-        }
-
-        for (j = 1; j <= m; j++) {
+        for (int j = 1; j <= m; j++) {
             upperLeft = p[0];
             rightJ = right.charAt(j - 1);
             p[0] = j;
