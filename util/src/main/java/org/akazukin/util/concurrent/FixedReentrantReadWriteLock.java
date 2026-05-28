@@ -4,12 +4,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,16 +19,17 @@ import java.util.concurrent.locks.ReentrantLock;
 public class FixedReentrantReadWriteLock {
     ReentrantLock mutex = new ReentrantLock();
     Condition condition = this.mutex.newCondition();
-    Collection<LockRequest> lockRequests = new LinkedHashSet<>();
+    Collection<LockRequest> lockRequests = new CopyOnWriteArrayList<>();
     Collection<Lock> locks = new HashSet<>();
 
+    @NotNull
     public ILock exclusiveLock() {
         return this.lock(false);
     }
 
+    @NotNull
     private Lock lock(final boolean shared) {
-        final Thread owner = Thread.currentThread();
-        final LockRequest req = new LockRequest(owner, shared);
+        final LockRequest req = new LockRequest(Thread.currentThread(), shared);
         this.lockRequests.add(req);
 
         this.mutex.lock();
@@ -42,7 +45,7 @@ public class FixedReentrantReadWriteLock {
             if (!shared) {
                 final Collection<Lock> toBorrow = new HashSet<>();
                 for (final Lock existingLock : this.locks) {
-                    if (existingLock != lock && existingLock.isShared() && existingLock.isLendable()) {
+                    if (existingLock.isShared() && existingLock.isLendable()) {
                         lock.addLend(existingLock);
                         toBorrow.add(existingLock);
                     }
@@ -58,7 +61,7 @@ public class FixedReentrantReadWriteLock {
         }
     }
 
-    private boolean canLock(final LockRequest req) {
+    private boolean canLock(@NotNull final LockRequest req) {
         for (final LockRequest r : this.lockRequests) {
             if (r == req) {
                 break;
@@ -93,10 +96,12 @@ public class FixedReentrantReadWriteLock {
         }
     }
 
+    @Nullable
     public LockType getLockType() {
         return this.getLockType(Thread.currentThread());
     }
 
+    @Nullable
     public LockType getLockType(final Thread thread) {
         LockType type = null;
         for (final Lock lock : this.locks) {
@@ -111,6 +116,7 @@ public class FixedReentrantReadWriteLock {
         return type;
     }
 
+    @NotNull
     public ILock sharedLock() {
         return this.lock(true);
     }
@@ -119,12 +125,11 @@ public class FixedReentrantReadWriteLock {
         return this.locks.size();
     }
 
-    public void unlock(final ILock ilock) {
+    public void unlock(@NotNull final ILock ilock) {
         this.mutex.lock();
         try {
             this.locks.remove(ilock);
-            if (ilock instanceof Lock) {
-                final Lock lock = (Lock) ilock;
+            if (ilock instanceof final Lock lock) {
                 final Lock[] lentLocks = lock.clearLends();
                 Collections.addAll(this.locks, lentLocks);
             }
@@ -148,10 +153,11 @@ public class FixedReentrantReadWriteLock {
     @Getter
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
     private static class LockRequest {
+        @NotNull
         Thread owner;
         boolean shared;
 
-        LockRequest(final Thread owner, final boolean shared) {
+        LockRequest(@NotNull final Thread owner, final boolean shared) {
             this.owner = owner;
             this.shared = shared;
         }
@@ -168,26 +174,23 @@ public class FixedReentrantReadWriteLock {
         @Setter
         boolean lendable;
 
-        private Lock(final FixedReentrantReadWriteLock lock, final LockRequest request) {
+        private Lock(@NotNull final FixedReentrantReadWriteLock lock, @NotNull final LockRequest request) {
             this.lock = lock;
             this.request = request;
         }
 
-        public synchronized void addLend(final Lock lock) {
+        public synchronized void addLend(@NotNull final Lock lock) {
             this.lends.add(lock);
         }
 
-        public synchronized void setLends(final Lock lock) {
-            this.lends.clear();
-            this.lends.add(lock);
-        }
-
+        @NotNull
         public synchronized Lock[] clearLends() {
             final Lock[] res = this.lends.toArray(EMPTY_ARR);
             this.lends.clear();
             return res;
         }
 
+        @NotNull
         public Thread getOwner() {
             return this.request.getOwner();
         }
